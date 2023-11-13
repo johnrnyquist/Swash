@@ -9,7 +9,7 @@ to and removed from the engine and as the components on entities change.
 open class Node {
     public var components: [ComponentClassName: Component?] = [:]
 
-    subscript<T: Component>(_ type: T.Type) -> T? {
+    public subscript<T: Component>(_ type: T.Type) -> T? {
         components[T.name] as? T
     }
 

@@ -6,6 +6,9 @@ open class Component {
 	static public var name: String {
 		"\(Self.self)"
 	}
+	public init() {
+
+	}
 }
 
 extension Component: Equatable {

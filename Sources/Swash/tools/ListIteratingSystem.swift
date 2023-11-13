@@ -13,7 +13,7 @@ A useful class for systems which simply iterate over a set of nodes, performing 
       }
 </code>
 */
-public class ListIteratingSystem: System {
+open class ListIteratingSystem: System {
     var nodeList: NodeList?
     var nodeClass: Node.Type
     var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
@@ -33,7 +33,7 @@ public class ListIteratingSystem: System {
         self.nodeClass = nodeClass
     }
 
-    public override func addToEngine(engine: Engine) {
+    open override func addToEngine(engine: Engine) {
         nodeList = engine.getNodeList(nodeClassType: nodeClass)
         if (nodeAddedFunction != nil) {
             var node = nodeList?.head
@@ -48,7 +48,7 @@ public class ListIteratingSystem: System {
         }
     }
 
-    public override func removeFromEngine(engine: Engine) {
+    open override func removeFromEngine(engine: Engine) {
         if let _ = nodeAddedFunction {
             nodeList?.nodeAdded.remove(nodeAddedFunctionListener)
         }
@@ -58,7 +58,7 @@ public class ListIteratingSystem: System {
         nodeList = nil
     }
 
-    public override func update(time: TimeInterval) {
+    open override func update(time: TimeInterval) {
         var node = nodeList?.head
         while node != nil {
             nodeUpdateFunction?(node!, time)
