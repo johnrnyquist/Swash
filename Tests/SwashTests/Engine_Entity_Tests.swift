@@ -24,7 +24,7 @@ final class Engine_Entity_Tests: XCTestCase {
     }
 
     func test_familiesIncremented() throws {
-        engine?.addSystem(system: system!, priority: SystemPriorities.preUpdate)
+		engine?.addSystem(system: system!, priority: SystemPriorities.preUpdate.rawValue)
         try! engine?.addEntity(entity: entity!)
         entity!.add(component: component!)
         XCTAssertEqual(engine!.families.count, 1)
