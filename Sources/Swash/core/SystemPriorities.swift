@@ -1,4 +1,4 @@
-class SystemPriorities {
+public class SystemPriorities {
     static let preUpdate = 1
     static let update = 2
     static let move = 3
