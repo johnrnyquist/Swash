@@ -4,6 +4,7 @@
 
 #### Example
 - [Swashteroids](https://github.com/johnrnyquist/Swashteroids)
+![Swashteroids](images/swashteroids.png)
 
 #### Developer
 - [John Nyquist](https://linkedin.com/in/nyquist)
