@@ -1,0 +1,70 @@
+import struct Foundation.TimeInterval
+
+/**
+A useful class for systems which simply iterate over a set of nodes, performing the same action on each node. This class removes the need for a lot of boilerplate code in such systems. Extend this class and pass the node type and a node update method into the constructor. The node update method will be called once per node on the update cycle with the node instance and the frame time as parameters. e.g.
+ <code>
+     public class MySystem: ListIteratingSystem {
+        public init() {
+          super.init( MyNode, updateNode )
+        }
+        private function updateNode( node : MyNode, time : TimeInterval ) {
+          // process the node here
+        }
+      }
+</code>
+*/
+public class ListIteratingSystem: System {
+    var nodeList: NodeList?
+    var nodeClass: Node.Type
+    var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
+        didSet { if let nodeUpdateFunction { nodeUpdateFunctionListener = Listener(nodeUpdateFunction) } }
+    }
+    var nodeAddedFunction: Node_NoReturn? {
+        didSet { if let nodeAddedFunction { nodeAddedFunctionListener = Listener(nodeAddedFunction) } }
+    }
+    var nodeRemovedFunction: NoArg_NoReturn? {
+        didSet { if let nodeRemovedFunction { nodeRemovedFunctionListener = Listener(nodeRemovedFunction) } }
+    }
+    private var nodeUpdateFunctionListener: Listener!
+    private var nodeAddedFunctionListener: Listener!
+    private var nodeRemovedFunctionListener: Listener!
+
+    public init(nodeClass: Node.Type) {
+        self.nodeClass = nodeClass
+    }
+
+    public override func addToEngine(engine: Engine) {
+        nodeList = engine.getNodeList(nodeClassType: nodeClass)
+        if (nodeAddedFunction != nil) {
+            var node = nodeList?.head
+            while node != nil {
+                nodeAddedFunction?(node!)
+                node = node!.next
+            }
+            if let nodeAddedFunction { nodeList?.nodeAdded.add(Listener(nodeAddedFunction)) }
+        }
+        if let nodeRemovedFunction {
+            nodeList?.nodeRemoved.add(Listener(nodeRemovedFunction))
+        }
+    }
+
+    public override func removeFromEngine(engine: Engine) {
+        if let _ = nodeAddedFunction {
+            nodeList?.nodeAdded.remove(nodeAddedFunctionListener)
+        }
+        if let _ = nodeRemovedFunction {
+            nodeList?.nodeRemoved.remove(nodeRemovedFunctionListener)
+        }
+        nodeList = nil
+    }
+
+    public override func update(time: TimeInterval) {
+        var node = nodeList?.head
+        while node != nil {
+            nodeUpdateFunction?(node!, time)
+            node = node!.next
+        }
+    }
+}
+
+
