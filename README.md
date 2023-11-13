@@ -6,7 +6,7 @@
 - [Swashteroids](https://github.com/johnrnyquist/Swashteroids)
 
 #### Developer
-- John Nyquist
+- [John Nyquist](https://linkedin.com/in/nyquist)
 
 #### Thank You
 - Swash is based on the brilliant [Ash](https://github.com/richardlord/Ash) framework by Richard Lord. 
