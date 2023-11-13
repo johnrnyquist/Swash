@@ -16,13 +16,13 @@ A useful class for systems which simply iterate over a set of nodes, performing 
 open class ListIteratingSystem: System {
     var nodeList: NodeList?
     var nodeClass: Node.Type
-    var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
+    public var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
         didSet { if let nodeUpdateFunction { nodeUpdateFunctionListener = Listener(nodeUpdateFunction) } }
     }
     public var nodeAddedFunction: Node_NoReturn? {
         didSet { if let nodeAddedFunction { nodeAddedFunctionListener = Listener(nodeAddedFunction) } }
     }
-    var nodeRemovedFunction: NoArg_NoReturn? {
+    public var nodeRemovedFunction: NoArg_NoReturn? {
         didSet { if let nodeRemovedFunction { nodeRemovedFunctionListener = Listener(nodeRemovedFunction) } }
     }
     private var nodeUpdateFunctionListener: Listener!
