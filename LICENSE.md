@@ -1,5 +1,4 @@
-Swash: An entity framework for Swift
-.................................................
+# Swash: An entity framework for Swift
 
 Author: John Nyquist
 Copyright (c) John Nyquist 2023
