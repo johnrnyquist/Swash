@@ -26,7 +26,7 @@ open class System {
     Override this method to add your own functionality.
     - Parameter engine: The engine the system was added to.
     */
-    public func addToEngine(engine: Engine) {
+    open func addToEngine(engine: Engine) {
     }
 
     /**
@@ -34,7 +34,7 @@ open class System {
     Override this method to add your own functionality.
     - Parameter engine: The engine the system was removed from.
     */
-    public func removeFromEngine(engine: Engine) {
+    open func removeFromEngine(engine: Engine) {
     }
 
     /**
@@ -45,7 +45,7 @@ open class System {
     the engine's updateComplete signal to be notified when the update loop completes.
     @param time The duration, in seconds, of the frame.
     */
-    public func update(time: TimeInterval) {
+    open func update(time: TimeInterval) {
     }
 }
 

@@ -7,7 +7,7 @@ to the list obtained by the system. The engine keeps the list up to date as enti
 to and removed from the engine and as the components on entities change.
 */
 open class Node {
-    var components: [ComponentClassName: Component?] = [:]
+    public var components: [ComponentClassName: Component?] = [:]
 
     subscript<T: Component>(_ type: T.Type) -> T? {
         components[T.name] as? T

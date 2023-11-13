@@ -1,4 +1,4 @@
-let nil_component: Component? = nil
+public let nil_component: Component? = nil
 
 /// All components must extend this class
 open class Component {
