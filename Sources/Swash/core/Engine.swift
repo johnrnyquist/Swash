@@ -34,6 +34,7 @@ public class Engine {
     lazy private var componentRemovedListener: Listener = { Listener(componentRemoved) }()
     lazy private var entityNameChangedListener: Listener = { Listener(entityNameChanged) }()
 
+	public init() {}
     /// Add an entity to the engine.
     /// - Parameter entity: The entity to add.
     /// - Throws: AshError.entityNameAlreadyInUse
