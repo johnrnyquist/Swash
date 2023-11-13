@@ -3,13 +3,13 @@
 # Swash: An entity framework for Swift
 
 #### Example
-[Swashteroids](https://github.com/johnrnyquist/Swashteroids)
+- [Swashteroids](https://github.com/johnrnyquist/Swashteroids)
 
 #### Developer
-John Nyquist
+- John Nyquist
 
 #### Thank You
-Swash is based on the brilliant [Ash](https://github.com/richardlord/Ash) framework by Richard Lord. 
+- Swash is based on the brilliant [Ash](https://github.com/richardlord/Ash) framework by Richard Lord. 
 
 #### License
-This project is licensed under the MIT License - see the LICENSE.md file for details
+- This project is licensed under the MIT License - see the LICENSE.md file for details
