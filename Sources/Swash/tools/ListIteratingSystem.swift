@@ -19,7 +19,7 @@ open class ListIteratingSystem: System {
     var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
         didSet { if let nodeUpdateFunction { nodeUpdateFunctionListener = Listener(nodeUpdateFunction) } }
     }
-    var nodeAddedFunction: Node_NoReturn? {
+    public var nodeAddedFunction: Node_NoReturn? {
         didSet { if let nodeAddedFunction { nodeAddedFunctionListener = Listener(nodeAddedFunction) } }
     }
     var nodeRemovedFunction: NoArg_NoReturn? {
