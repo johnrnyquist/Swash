@@ -1,7 +1,7 @@
 let nil_component: Component? = nil
 
 /// All components must extend this class
-public class Component {
+open class Component {
 	weak var entity: Entity?
 	static public var name: String {
 		"\(Self.self)"

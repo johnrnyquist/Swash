@@ -1,6 +1,6 @@
 /// Instances of this class can dispatch a "signal" to its listners.
 /// This is a base class, it should not be instantiated.
-public class Signaler {
+open class Signaler {
     var head: ListenerNode?
     var tail: ListenerNode?
     private var nodes: [Listener: ListenerNode] = [:]

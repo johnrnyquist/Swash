@@ -6,7 +6,7 @@ a node for every entity that has all of the components in the node class and add
 to the list obtained by the system. The engine keeps the list up to date as entities are added
 to and removed from the engine and as the components on entities change.
 */
-public class Node {
+open class Node {
     var components: [ComponentClassName: Component?] = [:]
 
     subscript<T: Component>(_ type: T.Type) -> T? {

@@ -1,7 +1,7 @@
 import struct Foundation.TimeInterval
 import struct Foundation.UUID
 
-public class System {
+open class System {
 	let _id = UUID()
 
 	static public var name: String {

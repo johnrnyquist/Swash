@@ -16,7 +16,7 @@ class MockNode: Node {
     required init() {
         super.init()
         let keyPath: ReferenceWritableKeyPath<MockNode, MockComponent?> = \MockNode.mockComponent
-        let paths: [ReferenceWritableKeyPath<MockNode, MockComponent?>: Component?] = [keyPath: nil]
+		let _: [ReferenceWritableKeyPath<MockNode, MockComponent?>: Component?] = [keyPath: nil]
         components = ["\(MockComponent.self)": nil, "\(AnotherMockComponent.self)": nil]
     }
 }
