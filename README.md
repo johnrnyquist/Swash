@@ -1,12 +1,13 @@
 <img src="./images/swash.png" width="600" />
 
-# Swash: An entity framework for Swift
+# Swash: An ECS framework for Swift
 
 Swash is an entity systems component framework. The name "Swash" is a portmanteau of "Swift" and "Ash". Swash is a work-in-progress.
 
-#### ECS Warning
+#### ECS Warning - There be dragons here!
 If you've not tried to implement anything with an ECS before, you might be in for a surprise. It is a different paradigm for solving problems. In an OOP world you're think of objects, but in an ECS you'll find it at times crazy fun and other times maddening because you're forced to solve a problem in an alien manner. It may be like your first time object-oriented programming if you were mostly experienced with procedural programming. 
 
+#### Process Overview
 In Swash you will create entities. Entities aggregate components, which are like value objects. Neither of these make the decisions, that's done with systems that act on the components by way of nodes. You will define nodes, that describe a structure of an `Entity` instance. When you add an object to an `Engine`, the engine will see what nodes can be made from the entity. Nodes hold references to components. 
 
 #### History
