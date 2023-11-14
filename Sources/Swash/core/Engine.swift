@@ -127,9 +127,7 @@ public class Engine {
     The engine will create the appropriate NodeList if it doesn't already exist and will keep its contents up to date as entities are added to and removed from the engine.
     
     If a NodeList is no longer required, release it with the releaseNodeList method.
-     
-    NOTE: This appears to be called only from tests at the moment.
-     
+
     - Parameter nodeClassType: The type of the node.
     - Returns: A linked list of all nodes of this type from all entities in the engine.
     */
