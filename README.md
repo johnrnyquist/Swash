@@ -1,4 +1,4 @@
-<img src="https://./images/swash.png" width="400" />
+<img src="./images/swash.png" width="400" />
 
 # Swash: An entity framework for Swift
 
