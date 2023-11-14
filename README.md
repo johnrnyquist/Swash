@@ -11,7 +11,7 @@ If you've not tried to implement anything with an ECS before, you might be in fo
 
 
 ## Process Overview
-In Swash you will create entities. Entities aggregate components, which are like value objects. Neither of these make the decisions, that's done with systems that act on the components by way of nodes. You will define nodes, that describe a structure of an `Entity` instance. When you add an object to an `Engine`, the engine will see what nodes can be made from the entity. Nodes hold references to components. 
+In Swash you will create entities. An `Entity` is an aggregate of components. A `Component` is like a object. Neither of these make the decisions, that's done in a `System` that acts on the components by way of nodes. Nodes hold references to components. You will define each `Node`, that describe the components from an entity that the system acts on. When you add an object to an `Engine`, the engine will see what nodes can be made from the entity based on its components.  
 
 
 ## Example
