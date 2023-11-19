@@ -16,7 +16,6 @@ class NodePool {
 Creates a pool for the given node class.
 */
     init(nodeClassName: NodeClassName) {
-        print("NodePool for", nodeClassName)
         self.nodeClassName = nodeClassName
     }
 
@@ -28,7 +27,6 @@ Fetches a node from the pool.
             let node: Node? = tail
             tail = tail?.previous
             node?.previous = nil
-            print("HERE \(nodeClassName)")
             return node! //safe because of nil check
         } else {
             return (classFromString(className: nodeClassName) as! Node.Type).init()

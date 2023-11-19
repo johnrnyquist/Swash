@@ -43,7 +43,6 @@ public class Engine {
                     return
 //            throw AshError.entityNameAlreadyInUse("The entity name " + entity.name + " is already in use by another entity.")
         }
-        print(#function, entity.name)
         entityList.add(entity: entity)
         entityNames[entity.name] = entity
         entity.componentAdded?.add(componentAddedListener)
@@ -57,7 +56,6 @@ public class Engine {
     /// Remove an entity from the engine.
     /// - Parameter entity: The entity to remove.
     public func removeEntity(entity: Entity) {
-        print(#function, entity.name)
         entity.componentAdded?
               .remove(componentAddedListener)        
         entity.componentRemoved?

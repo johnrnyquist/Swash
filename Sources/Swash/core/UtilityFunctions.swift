@@ -2,7 +2,6 @@ import class Foundation.Bundle
 import func Foundation.NSClassFromString
 
 func classFromString(className: String) -> AnyClass! {
-    print(#function, className)
     let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
     var cls: AnyClass? = NSClassFromString("\(namespace).\(className)")
     if cls == nil {
