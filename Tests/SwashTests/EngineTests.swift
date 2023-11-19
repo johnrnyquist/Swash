@@ -41,7 +41,7 @@ final class EngineTests: XCTestCase {
         let entity = Entity()
         let name = entity.name
         try! engine.addEntity(entity: entity)
-        let entityFound = engine.getEntityByName(name: name)
+        let entityFound = engine.getEntity(named: name)
         XCTAssertEqual(entityFound, entity)
     }
 
@@ -86,7 +86,7 @@ final class EngineTests: XCTestCase {
         let entity2: Entity = Entity()
         entity2.name = "myEntity"
         try! engine.addEntity(entity: entity2)
-        XCTAssertTrue(engine.getEntityByName(name: "myEntity") === entity2)
+        XCTAssertTrue(engine.getEntity(named: "myEntity") === entity2)
     }
 
     func test_getEntityByNameReturnsNullIfNoEntity() {
@@ -96,7 +96,7 @@ final class EngineTests: XCTestCase {
         let entity2: Entity = Entity()
         entity2.name = "myEntity"
         try! engine.addEntity(entity: entity2)
-        XCTAssertNil(engine.getEntityByName(name: "wrongName"))
+        XCTAssertNil(engine.getEntity(named: "wrongName"))
     }
 
     func test_addEntityChecksWithAllFamilies() {
@@ -172,12 +172,12 @@ final class EngineTests: XCTestCase {
     func test_entityCanBeObtainedByName() {
         let entity: Entity = Entity(name: "anything")
         try! engine.addEntity(entity: entity)
-        let other: Entity = engine.getEntityByName(name: "anything")!
+        let other: Entity = engine.getEntity(named: "anything")!
         XCTAssertTrue(other === entity)
     }
 
     func test_getEntityByInvalidNameReturnsNull() {
-        let entity: Entity? = engine.getEntityByName(name: "anything")
+        let entity: Entity? = engine.getEntity(named: "anything")
         XCTAssertNil(entity)
     }
 
@@ -185,7 +185,7 @@ final class EngineTests: XCTestCase {
         let entity: Entity = Entity(name: "anything")
         try! engine.addEntity(entity: entity)
         entity.name = "otherName"
-        let other: Entity? = engine.getEntityByName(name: "otherName")
+        let other: Entity? = engine.getEntity(named: "otherName")
         XCTAssertTrue(other === entity)
     }
 
@@ -193,7 +193,7 @@ final class EngineTests: XCTestCase {
         let entity: Entity? = Entity(name: "anything")
         try! engine.addEntity(entity: entity!)
         entity?.name = "otherName"
-        let other: Entity? = engine.getEntityByName(name: "anything")
+        let other: Entity? = engine.getEntity(named: "anything")
         XCTAssertNil(other)
     }
 }

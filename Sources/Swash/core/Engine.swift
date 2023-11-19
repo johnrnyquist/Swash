@@ -83,8 +83,8 @@ public class Engine {
     @param name The name of the entity
     @return The entity, or nil if no entity with that name exists on the engine
     */
-    public func getEntityByName(name: String) -> Entity? {
-                return entityNames[name]
+    public func getEntity(named: String) -> Entity? {
+                return entityNames[named]
     }
 
     /**
