@@ -57,8 +57,12 @@ class PosComponent: Component {
     }
 }
 
-class MockPosNode: Node {
+class MockPosNode: Node, CustomStringConvertible {
     var pos: Int = 0
+
+	var description: String {
+		return "pos \(pos)"
+	}
 
     convenience init(_ value: Int = 0) {
         self.init()

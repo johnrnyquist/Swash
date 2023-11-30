@@ -120,13 +120,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node1)
         nodes.add(node: node2)
         nodes.add(node: node3)
-        var array = [Node]()
-        var node = nodes.head //as? MockPosNode
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node2, node3])
+        XCTAssertEqual(nodes.toArray(), [node1, node2, node3])
     }
 
     func test_swappingOnlyTwoNodesChangesTheirOrder() {
@@ -135,32 +129,20 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node1)
         nodes.add(node: node2)
         nodes.swap(node1: node1, node2: node2)
-        var array = [Node]()
-        var node = nodes.head //as? MockPosNode
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node2, node1])
+        XCTAssertEqual(nodes.toArray(), [node2, node1])
     }
 
     func test_swappingAdjacentNodesChangesTheirPositions() {
-        let node1 = MockPosNode()
-        let node2 = MockPosNode()
-        let node3 = MockPosNode()
-        let node4 = MockPosNode()
+		let node1 = MockPosNode(1)
+		let node2 = MockPosNode(2)
+		let node3 = MockPosNode(3)
+		let node4 = MockPosNode(4)
         nodes.add(node: node1)
         nodes.add(node: node2)
         nodes.add(node: node3)
         nodes.add(node: node4)
         nodes.swap(node1: node2, node2: node3)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node3, node2, node4])
+        XCTAssertEqual(nodes.toArray(), [node1, node3, node2, node4])
     }
 
     func test_swappingNonAdjacentNodesChangesTheirPositions() {
@@ -175,13 +157,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node4)
         nodes.add(node: node5)
         nodes.swap(node1: node2, node2: node4)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node4, node3, node2, node5])
+        XCTAssertEqual(nodes.toArray(), [node1, node4, node3, node2, node5])
     }
 
     func test_swappingEndNodesChangesTheirPositions() {
@@ -192,13 +168,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node2)
         nodes.add(node: node3)
         nodes.swap(node1: node1, node2: node3)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node3, node2, node1])
+        XCTAssertEqual(nodes.toArray(), [node3, node2, node1])
     }
 
     func sortFunction(_ node1: Node?, _ node2: Node?) -> Int {
@@ -218,13 +188,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node3)
         nodes.add(node: node4)
         nodes.insertionSort(sortFunction: sortFunction)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node2, node3, node4])
+        XCTAssertEqual(nodes.toArray(), [node1, node2, node3, node4])
     }
 
     func test_insertionSortCorrectlySortsReversedNodes() {
@@ -237,13 +201,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node2)
         nodes.add(node: node1)
         nodes.insertionSort(sortFunction: sortFunction)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node2, node3, node4])
+        XCTAssertEqual(nodes.toArray(), [node1, node2, node3, node4])
     }
 
     func test_insertionSortCorrectlySortsMixedNodes() {
@@ -258,13 +216,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node5)
         nodes.add(node: node2)
         nodes.insertionSort(sortFunction: sortFunction)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node2, node3, node4, node5])
+        XCTAssertEqual(nodes.toArray(), [node1, node2, node3, node4, node5])
     }
 
     func test_insertionSortRetainsTheOrderOfEquivalentNodes() {
@@ -279,13 +231,7 @@ final class NodeListTests: XCTestCase {
         nodes.add(node: node5)
         nodes.add(node: node2)
         nodes.insertionSort(sortFunction: sortFunction)
-        var array = [Node]()
-        var node = nodes.head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
-        }
-        XCTAssertTrue(array == [node1, node2, node3, node4, node5])
+        XCTAssertEqual(nodes.toArray(), [node1, node2, node3, node4, node5])
     }
 }
 

@@ -87,32 +87,50 @@ public class NodeList {
     Swaps the positions of two nodes in the list. Useful when sorting a list.
     */
     public func swap(node1: Node, node2: Node) {
-        if node1.previous == node2 {
-            node1.previous = node2.previous
-            node2.previous = node1
-            node2.next = node1.next
-            node1.next = node2
-        } else if node2.previous == node1 { // adjacent and in order
-            node2.previous = node1.previous
-            node1.previous = node2
-            node1.next = node2.next
+        if node1 === node2 {
+            // No need to swap if both nodes are the same
+            return
+        } else if node1.next === node2 { // node1 is before node2
+            let node0 = node1.previous
+            let node3 = node2.next
+            node0?.next = node2
+            node2.previous = node0
             node2.next = node1
-        } else {
-            var temp: Node? = node1.previous
-            node1.previous = node2.previous
-            node2.previous = temp
-            temp = node1.next
-            node1.next = node2.next
-            node2.next = temp
+            node1.previous = node2
+            node1.next = node3
+            node3?.previous = node1
+        } else if node2.next === node1 { // node2 is before node1
+            let node0 = node2.previous
+            let node3 = node1.next
+            node0?.next = node1
+            node1.previous = node0
+            node1.next = node2
+            node2.previous = node1
+            node2.next = node3
+            node3?.previous = node2
+        } else { // node1 and node2 are not adjacent
+            let node0 = node1.previous
+            let node1next = node1.next
+            let node2prev = node2.previous
+            let node3 = node2.next
+            node0?.next = node2
+            node2.previous = node0
+            node2.next = node1next
+            node1next?.previous = node2
+            node2prev?.next = node1
+            node1.previous = node2prev
+            node1.next = node3
+            node3?.previous = node1
         }
-        if head == node1 {
+
+        if head === node1 {
             head = node2
-        } else if (head == node2) {
+        } else if (head === node2) {
             head = node1
         }
-        if tail == node1 {
+        if tail === node1 {
             tail = node2
-        } else if (tail == node2) {
+        } else if (tail === node2) {
             tail = node1
         }
         if node1.previous != nil {
@@ -186,6 +204,16 @@ public class NodeList {
             }
             node = remains //end outer
         }
+    }
+    
+    public func toArray() -> [Node] {
+        var array = [Node]()
+        var node = head
+        while node != nil {
+            array.append(node!)
+            node = node!.next
+        }
+        return array
     }
 
     /* THESE ARE NOT USED, CONVERSION IS LOW PRIORITY
