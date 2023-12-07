@@ -37,21 +37,29 @@ public class Engine {
 	public init() {}
     /// Add an entity to the engine.
     /// - Parameter entity: The entity to add.
-    /// - Throws: AshError.entityNameAlreadyInUse
-    public func addEntity(entity: Entity) throws {
-                if entityNames[entity.name] != nil {
-                    return
-//            throw AshError.entityNameAlreadyInUse("The entity name " + entity.name + " is already in use by another entity.")
-        }
-        entityList.add(entity: entity)
-        entityNames[entity.name] = entity
-        entity.componentAdded?.add(componentAddedListener)
-        entity.componentRemoved?.add(componentRemovedListener)
-        entity.nameChanged?.add(entityNameChangedListener)
-        for family in families {
-            family.value.newEntity(entity: entity)
-        }
-    }
+    /// - Throws: SwashError.entityNameAlreadyInUse
+	public func addEntity(entity: Entity) throws {
+		if entityNames[entity.name] != nil {
+			throw SwashError.entityNameAlreadyInUse("The entity name " + entity.name + " is already in use.")
+		}
+		entityList.add(entity: entity)
+		entityNames[entity.name] = entity
+		entity.componentAdded?.add(componentAddedListener)
+		entity.componentRemoved?.add(componentRemovedListener)
+		entity.nameChanged?.add(entityNameChangedListener)
+		for family in families {
+			family.value.newEntity(entity: entity)
+		}
+	}
+	
+	/// Replace an entity in the engine. If it does not exist it will add it.
+	/// - Parameter entity: The entity to replace.
+	public func replaceEntity(entity: Entity) {
+		if let existingEntity = entityNames[entity.name] {
+			removeEntity(entity: existingEntity)
+		}
+		try? addEntity(entity: entity)
+	}
 
     /// Remove an entity from the engine.
     /// - Parameter entity: The entity to remove.
