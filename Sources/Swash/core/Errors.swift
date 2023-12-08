@@ -1,3 +1,3 @@
-enum SwashError: Error {
+public enum SwashError: Error {
     case entityNameAlreadyInUse(String)
 }
