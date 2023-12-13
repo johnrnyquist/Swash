@@ -18,7 +18,7 @@ In Swash you will create entities. An `Entity` is an aggregate of components. A 
 - [A simple introduction](https://github.com/johnrnyquist/SimpleSwashIntro) to Swash project.
 - [Swashteroids](https://apps.apple.com/us/app/swashteroids/id6472061502) Check out this game made with Swash, or check out its [source code](https://github.com/johnrnyquist/Swashteroids) to get an idea on how to start writing your own. Here's a [video](https://www.youtube.com/watch?v=WM2IAM2pBCY) of the gameplay. Buy it in the App Store (only $0.99) to support development (mainly by encouraging the developer). 
 
-![Swashteroids](images/swashteroids.png)
+![Swashteroids](images/swashteroids2.png)
 
 
 ## History
