@@ -6,9 +6,9 @@ final public class FrameTickProvider: Signaler1, ITickProvider {
     private var maximumFrameTime: TimeInterval
     private var isPlaying: Bool = false
     /**
-		 * Applies a time adjustement factor to the tick, so you can slow down or speed up the entire engine.
-		 * The update tick time is multiplied by this value, so a value of 1 will run the engine at the normal rate.
-		 */
+	 * Applies a time adjustement factor to the tick, so you can slow down or speed up the entire engine.
+	 * The update tick time is multiplied by this value, so a value of 1 will run the engine at the normal rate.
+	*/
     public var timeAdjustment: Double = 1.0
 
     public init(maximumFrameTime: TimeInterval = TimeInterval.greatestFiniteMagnitude) {
@@ -43,4 +43,8 @@ final public class FrameTickProvider: Signaler1, ITickProvider {
     private func getTimer() -> TimeInterval {
         Date().timeIntervalSince1970 * 1000
     }
+
+	public func setPreviousTime(to newValue: TimeInterval) {
+		previousTime = newValue
+	}
 }
