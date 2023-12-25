@@ -40,7 +40,7 @@ final public class FrameTickProvider: Signaler1, ITickProvider {
         isPlaying
     }
 
-    private func getTimer() -> TimeInterval {
+    public func getTimer() -> TimeInterval {
         Date().timeIntervalSince1970 * 1000
     }
 
