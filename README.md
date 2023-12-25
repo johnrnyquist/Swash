@@ -1,4 +1,4 @@
-<img src="./images/swash.png" width="600" />
+<img src="./images/swash.png"/>
 
 
 # Swash: An ECS framework for Swift
