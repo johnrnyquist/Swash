@@ -32,14 +32,14 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         let nodes: NodeList = family.nodeList
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         XCTAssertTrue(nodes.head?.entity === entity)
     }
 
     func test_MatchingEntityIsAddedWhenAccessNodeListSecond() {
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         let nodes: NodeList = family.nodeList
         XCTAssertTrue(nodes.head?.entity === entity)
     }
@@ -48,7 +48,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         let entity: Entity = Entity()
         let point = PointComponent()
         entity.add(component: point)
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         let nodes = family.nodeList
         let component = nodes.head?.components["\(PointComponent.self)"] ?? nil
         XCTAssertTrue(component === point)
@@ -58,13 +58,13 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         let nodes: NodeList = family.nodeList
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.componentAddedToEntity(entity: entity)
+        family.componentAddedTo(entity: entity)
         XCTAssertTrue(nodes.head?.entity === entity)
     }
 
     func test_NonMatchingEntityIsNotAdded() {
         let entity: Entity = Entity()
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         let nodes: NodeList = family.nodeList
         XCTAssertNil(nodes.head)
     }
@@ -72,7 +72,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
     func test_NonMatchingEntityIsNotAddedWhenComponentAdded() {
         let entity: Entity = Entity()
         entity.add(component: MatrixComponent())
-        family.componentAddedToEntity(entity: entity)
+        family.componentAddedTo(entity: entity)
         let nodes: NodeList = family.nodeList
         XCTAssertNil(nodes.head)
     }
@@ -80,17 +80,17 @@ final class ComponentMatchingFamilyTests: XCTestCase {
     func test_EntityIsRemovedWhenAccessNodeListFirst() {
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         let nodes: NodeList = family.nodeList
-        family.removeEntity(entity: entity)
+        family.remove(entity: entity)
         XCTAssertNil(nodes.head)
     }
 
     func test_EntityIsRemovedWhenAccessNodeListSecond() {
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
-        family.removeEntity(entity: entity)
+        family.new(entity: entity)
+        family.remove(entity: entity)
         let nodes: NodeList = family.nodeList
         XCTAssertNil(nodes.head)
     }
@@ -98,9 +98,9 @@ final class ComponentMatchingFamilyTests: XCTestCase {
     func test_EntityIsRemovedWhenComponentRemoved() {
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         entity.remove(componentClass: PointComponent.self)
-        family.componentRemovedFromEntity(entity: entity, componentClassName: "\(PointComponent.self)")
+        family.componentRemovedFrom(entity: entity, componentClassName: "\(PointComponent.self)")
         let nodes: NodeList = family.nodeList
         XCTAssertNil(nodes.head)
     }
@@ -112,8 +112,8 @@ final class ComponentMatchingFamilyTests: XCTestCase {
             let entity: Entity = Entity()
             entity.add(component: PointComponent())
             entities.append(entity)
-            family.newEntity(entity: entity)
-            family.newEntity(entity: Entity())
+            family.new(entity: entity)
+            family.new(entity: Entity())
 
             i += 1
         }
@@ -132,8 +132,8 @@ final class ComponentMatchingFamilyTests: XCTestCase {
 //            var entity: Entity = Entity()
 //            entity.add(PointComponent())
 //            entities.push(entity)
-//            family.newEntity(entity)
-//            family.newEntity(Entity())
+//            family.new(entity)
+//            family.new(Entity())
 //
 //            i += 1
 //        }
@@ -150,7 +150,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
     func cleanUpEmptiesNodeList() {
         let entity: Entity = Entity()
         entity.add(component: PointComponent())
-        family.newEntity(entity: entity)
+        family.new(entity: entity)
         let nodes: NodeList = family.nodeList
         family.cleanUp()
         XCTAssertNil(nodes.head)
@@ -163,7 +163,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
             let entity: Entity = Entity()
             entity.add(component: PointComponent())
             entities.append(entity)
-            family.newEntity(entity: entity)
+            family.new(entity: entity)
             i += 1
         }
         let nodes: NodeList = family.nodeList

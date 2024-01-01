@@ -2,11 +2,9 @@
 An entity is composed from components. As such, it is essentially a collection object for components. 
 Sometimes, the entities in a game will mirror the actual characters and objects in the game, but this 
 is not necessary.
-
 Components are simple value objects that contain data relevant to the entity. Entities
 with similar functionality will have instances of the same components. So we might have 
 a position component
-
 All entities that have a position in the game world, will have an instance of the
 position component. Systems operate on entities based on the components they have.
 */
@@ -25,10 +23,10 @@ open class Entity {
     var previous: Entity?
     var next: Entity?
     var components: [ComponentClassName: Component] = [:]
-    //
+
     /// The initializer
     /// - Parameter name: The name for the entity. If left blank, a default name is assigned with the form _entityN where N is an integer.
-    public init(name: String = "") {
+    public init(named name: String = "") {
         if !name.isEmpty {
             _name = name
         } else {
@@ -40,7 +38,6 @@ open class Entity {
         nameChanged = Signaler2(self, name)
     }
 
-    ///
     /// All entities have a name. If no name is set, a default name is used. 
     /// Names are used to fetch specific entities from the engine, 
     /// and can also help to identify an entity when debugging.
@@ -60,7 +57,7 @@ open class Entity {
     ///   - component: The component object to add.
     /// - Returns: A reference to the entity. This enables the chaining of calls to add, to make
     /// creating and configuring entities cleaner. 
-    @discardableResult 
+    @discardableResult
     public func add<T: Component>(component: T) -> Entity {
         component.entity = self
         let componentClass = type(of: component)
@@ -75,24 +72,28 @@ open class Entity {
 
     /// Remove a component from the entity.
     /// - Parameter componentClass: The class of the component to be removed.
-    /// - Returns: the component, or nil if the component doesn't exist in the entity
-    @discardableResult 
+    /// - Returns: the component’s entity or the entity itself
+    @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
-        let component = components[componentClass.name] as? T
-        if component != nil {
-            components.removeValue(forKey: componentClass.name)
-            componentRemoved?.dispatch(self, componentClass.name)
-            return component!.entity!
+        guard let component = components[componentClass.name] as? T else {
+            print("Component of class \(componentClass.name) does not exist in the entity.")
+            return self
         }
-        component?.entity = nil
-        return self
+        components.removeValue(forKey: componentClass.name)
+        componentRemoved?.dispatch(self, componentClass.name)
+        if let entity = component.entity {
+            return entity
+        } else {
+            print("Entity of the component is nil.")
+            return self
+        }
     }
 
     /// Get a component from the entity.
     /// - Parameter componentClassName: The class of the component requested.
     /// - Returns: The component, or null if none was found.
     public func get(componentClassName: ComponentClassName) -> Component? {
-        return components[componentClassName] 
+        return components[componentClassName]
     }
 
     /// Get all components from the entity.
@@ -104,7 +105,7 @@ open class Entity {
         }
         return componentArray
     }
-    
+
     /// Does the entity have a component of a particular type?
     /// - Parameter componentClassName: The class of the component sought.
     /// - Returns: true if the entity has a component of the type, false if not.
@@ -117,16 +118,24 @@ open class Entity {
             remove(componentClass: type(of: component))
         }
     }
+
+    // MARK: - Deprecated
+    @available(iOS,
+               deprecated,
+               message: "The initializer `init(name:)` is deprecated and will be removed in version 1.1. Please use `init(named:)` instead.")
+    public convenience init(name: String = "") {
+        self.init(named: name)
+    }
 }
 
 extension Entity: Equatable {
-	static public func ==(lhs: Entity, rhs: Entity) -> Bool {
-		lhs.name == rhs.name
-	}
-
+    static public func ==(lhs: Entity, rhs: Entity) -> Bool {
+        lhs.name == rhs.name
+    }
 }
+
 extension Entity: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(name)
-	}
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
 }

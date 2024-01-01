@@ -40,36 +40,34 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     public var nodeList: NodeList
 
     /**
- Called by the engine when an entity has been added to it. 
- 
- We check if the entity should be in this family's NodeList and add it if appropriate.
- */
-    public func newEntity(entity: Entity) {
+     Called by the engine when an entity has been added to it.
+     We check if the entity should be in this family's NodeList and add it if appropriate.
+     */
+    public func new(entity: Entity) {
         addIfMatch(entity: entity)
     }
 
     /**
      Called by the engine when a component has been added to an entity. We check if the entity is not in this family's NodeList and should be, and add it if appropriate.
-      
      - Parameters:
-      - entity: The entity with the component added.
+     - entity: The entity with the component added.
      */
-    public func componentAddedToEntity(entity: Entity) {
+    public func componentAddedTo(entity: Entity) {
         addIfMatch(entity: entity)
     }
 
     /**
-    Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
-    */
-    public func componentRemovedFromEntity(entity: Entity, componentClassName: ComponentClassName) {
+     Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
+     */
+    public func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
         guard components.firstIndex(of: componentClassName) != nil else { return }
         removeIfMatch(entity: entity)
     }
 
     /**
-    Called by the engine when an entity has been rmoved from it. We check if the entity is in this family's NodeList and remove it if so.
-    */
-    public func removeEntity(entity: Entity) {
+     Called by the engine when an entity has been rmoved from it. We check if the entity is in this family's NodeList and remove it if so.
+     */
+    public func remove(entity: Entity) {
         removeIfMatch(entity: entity)
     }
 
@@ -132,5 +130,34 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
             node = node?.next //end
         }
         nodeList.removeAll()
+    }
+
+    // MARK: - Deprecated
+    @available(iOS,
+               deprecated,
+               message: "The function `newEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `new(entity:)` instead.")
+    public func newEntity(entity: Entity) {
+        new(entity: entity)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `componentAddedToEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `componentAddedTo(entity:)` instead.")
+    public func componentAddedToEntity(entity: Entity) {
+        componentAddedTo(entity: entity)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `componentRemovedFromEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `componentRemovedFrom(entity:)` instead.")
+    public func componentRemovedFromEntity(entity: Entity, componentClassName: ComponentClassName) {
+        componentRemovedFrom(entity: entity, componentClassName: componentClassName)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `removeEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `remove(entity:)` instead.")
+    public func removeEntity(entity: Entity) {
+        remove(entity: entity)
     }
 }

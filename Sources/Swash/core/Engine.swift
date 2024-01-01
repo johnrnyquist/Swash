@@ -20,10 +20,7 @@ public class Engine {
     /**
     Indicates if the engine is currently in its update loop.
     */
-    var updating = false {
-        didSet {
-                    }
-    }
+    var updating = false
     /**
     Dispatched when the update loop ends. If you want to add and remove systems from the
     engine it is usually best not to do so during the update loop. To avoid this you can
@@ -34,44 +31,45 @@ public class Engine {
     lazy private var componentRemovedListener: Listener = { Listener(componentRemoved) }()
     lazy private var entityNameChangedListener: Listener = { Listener(entityNameChanged) }()
 
-	public init() {}
+    public init() {}
+
     /// Add an entity to the engine.
     /// - Parameter entity: The entity to add.
     /// - Throws: SwashError.entityNameAlreadyInUse
-	public func addEntity(entity: Entity) throws {
-		if entityNames[entity.name] != nil {
-			throw SwashError.entityNameAlreadyInUse("The entity name " + entity.name + " is already in use.")
-		}
-		entityList.add(entity: entity)
-		entityNames[entity.name] = entity
-		entity.componentAdded?.add(componentAddedListener)
-		entity.componentRemoved?.add(componentRemovedListener)
-		entity.nameChanged?.add(entityNameChangedListener)
-		for family in families {
-			family.value.newEntity(entity: entity)
-		}
-	}
-	
-	/// Replace an entity in the engine. If it does not exist it will add it.
-	/// - Parameter entity: The entity to replace.
-	public func replaceEntity(entity: Entity) {
-		if let existingEntity = entityNames[entity.name] {
-			removeEntity(entity: existingEntity)
-		}
-		try? addEntity(entity: entity)
-	}
+    public func add(entity: Entity) throws {
+        guard entityNames[entity.name] == nil else {
+            throw SwashError.entityNameAlreadyInUse("The entity name \(entity.name) is already in use.")
+        }
+        entityList.add(entity: entity)
+        entityNames[entity.name] = entity
+        entity.componentAdded?.add(componentAddedListener)
+        entity.componentRemoved?.add(componentRemovedListener)
+        entity.nameChanged?.add(entityNameChangedListener)
+        for family in families {
+            family.value.new(entity: entity)
+        }
+    }
+
+    /// Replace an entity in the engine. If it does not exist it will add it.
+    /// - Parameter entity: The entity to replace.
+    public func replace(entity: Entity) {
+        if let existingEntity = getEntity(named: entity.name) {
+            remove(entity: existingEntity)
+        }
+        try? add(entity: entity)
+    }
 
     /// Remove an entity from the engine.
     /// - Parameter entity: The entity to remove.
-    public func removeEntity(entity: Entity) {
+    public func remove(entity: Entity) {
         entity.componentAdded?
-              .remove(componentAddedListener)        
+              .remove(componentAddedListener)
         entity.componentRemoved?
-              .remove(componentRemovedListener)      
+              .remove(componentRemovedListener)
         entity.nameChanged?
-              .remove(entityNameChangedListener)     
+              .remove(entityNameChangedListener)
         for family in families {
-            family.value.removeEntity(entity: entity)
+            family.value.remove(entity: entity)
         }
         entityNames.removeValue(forKey: entity.name)
         entityList.remove(entity: entity)
@@ -90,7 +88,7 @@ public class Engine {
     @return The entity, or nil if no entity with that name exists on the engine
     */
     public func getEntity(named: String) -> Entity? {
-                return entityNames[named]
+        return entityNames[named]
     }
 
     /**
@@ -98,7 +96,7 @@ public class Engine {
     */
     public func removeAllEntities() {
         while let head = entityList.head {
-            removeEntity(entity: head)
+            remove(entity: head)
         }
     }
 
@@ -117,13 +115,13 @@ public class Engine {
 
     private func componentAdded(entity: Entity) {
         for family in families {
-            family.value.componentAddedToEntity(entity: entity)
+            family.value.componentAddedTo(entity: entity)
         }
     }
 
     private func componentRemoved(entity: Entity, componentClassName: ComponentClassName) {
         for (_, family) in families {
-            family.componentRemovedFromEntity(entity: entity, componentClassName: componentClassName)
+            family.componentRemovedFrom(entity: entity, componentClassName: componentClassName)
         }
     }
 
@@ -133,22 +131,21 @@ public class Engine {
     The engine will create the appropriate NodeList if it doesn't already exist and will keep its contents up to date as entities are added to and removed from the engine.
     
     If a NodeList is no longer required, release it with the releaseNodeList method.
-
     - Parameter nodeClassType: The type of the node.
     - Returns: A linked list of all nodes of this type from all entities in the engine.
     */
     @discardableResult
     public func getNodeList(nodeClassType: Node.Type) -> NodeList {
         let nodeClassName = nodeClassType.name
-        if families[nodeClassName] != nil {
-            return families[nodeClassName]!.nodeList
+        if let family = families[nodeClassName] {
+            return family.nodeList
         }
         let family: IFamily = familyClass.init(nodeClassType: nodeClassType, engine: self)
         families[nodeClassName] = family
         var entity = entityList.head
-        while entity != nil {
-            family.newEntity(entity: entity!)
-            entity = entity!.next //end
+        while let currentEntity = entity {
+            family.new(entity: currentEntity)
+            entity = currentEntity.next //end
         }
         return family.nodeList
     }
@@ -171,19 +168,17 @@ public class Engine {
     }
 
     /**
-    Add a system to the engine, and set its priority for the order in which the
-    systems are updated by the engine update loop.
-    
-    The priority dictates the order in which the systems are updated by the engine update 
-    loop. Lower numbers for priority are updated first. i.e. a priority of 1 is 
-    updated before a priority of 2.
-    
-    - Parameter system: The system to add to the engine.
-    - Parameter priority: The priority for updating the systems during the engine loop. A 
-    lower number means the system is updated sooner.
-    */
+     Add a system to the engine, and set its priority for the order in which the
+     systems are updated by the engine update loop.
+     The priority dictates the order in which the systems are updated by the engine update
+     loop. Lower numbers for priority are updated first. i.e. a priority of 1 is
+     updated before a priority of 2.
+     - Parameter system: The system to add to the engine.
+     - Parameter priority: The priority for updating the systems during the engine loop. A
+     lower number means the system is updated sooner.
+     */
     @discardableResult
-    public func addSystem(system: System, priority: Int) -> Self {
+    public func add(system: System, priority: Int) -> Self {
         system.priority = priority
         system.addToEngine(engine: self)
         systemList.add(system: system)
@@ -215,11 +210,10 @@ public class Engine {
     }
 
     /**
-    Remove a system from the engine.
-    
-    - Parameter system: The system to remove from the engine.
-    */
-    public func removeSystem(system: System) {
+     Remove a system from the engine.
+     - Parameter system: The system to remove from the engine.
+     */
+    public func remove(system: System) {
         systemList.remove(system: system)
         system.removeFromEngine(engine: self)
     }
@@ -255,5 +249,45 @@ public class Engine {
         }
         updating = false
         updateComplete.dispatch()
+    }
+
+    // MARK: - Deprecated
+    @available(iOS,
+               deprecated,
+               message: "The function `removeEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `remove(entity:)` instead.")
+    public func removeEntity(entity: Entity) {
+        remove(entity: entity)
+    }
+
+    @discardableResult
+    @available(iOS,
+               deprecated,
+               message: "The function `addSystem(system:)` is deprecated and will be removed in version 1.1. Please use `add(system:)` instead.")
+    public func addSystem(system: System, priority: Int) -> Self {
+        add(system: system, priority: priority)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `replaceEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `replace(entity:)` instead.")
+    public func replaceEntity(entity: Entity) {
+        if let existingEntity = getEntity(named: entity.name) {
+            remove(entity: existingEntity)
+        }
+        try? add(entity: entity)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `addEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `add(entity:)` instead.")
+    public func addEntity(entity: Entity) throws {
+        try add(entity: entity)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `removeSystem(system:)` is deprecated and will be removed in version 1.1. Please use `remove(system:)` instead.")
+    public func removeSystem(system: System) {
+        remove(system: system)
     }
 }

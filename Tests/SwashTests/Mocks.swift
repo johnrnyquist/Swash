@@ -15,9 +15,8 @@ class MockNode: Node {
 
     required init() {
         super.init()
-        let keyPath: ReferenceWritableKeyPath<MockNode, MockComponent?> = \MockNode.mockComponent
-		let _: [ReferenceWritableKeyPath<MockNode, MockComponent?>: Component?] = [keyPath: nil]
-        components = ["\(MockComponent.self)": nil, "\(AnotherMockComponent.self)": nil]
+        components = [MockComponent.name: nil_component,
+                      AnotherMockComponent.name: nil_component]
     }
 }
 
@@ -27,7 +26,7 @@ class AnotherMockComponent: Component {
 class AMockNode: Node {
     required init() {
         super.init()
-        components = ["\(PointComponent.self)": nil]
+        components = [PointComponent.name: nil_component]
     }
 }
 
@@ -42,8 +41,8 @@ class MockPointMatixNode: Node {
 
     required init() {
         super.init()
-        components = ["\(PointComponent.self)": nil,
-                      "\(MatrixComponent.self)": nil
+        components = [PointComponent.name: nil_component,
+                      MatrixComponent.name: nil_component
         ]
     }
 }
@@ -71,7 +70,7 @@ class MockPosNode: Node, CustomStringConvertible {
 
     required init() {
         super.init()
-        components = ["\(PosComponent.self)": nil, ]
+        components = [PosComponent.name: nil_component]
     }
 }
 

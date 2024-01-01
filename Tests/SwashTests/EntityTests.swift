@@ -101,6 +101,29 @@ final class EntityTests: XCTestCase {
         XCTAssertFalse(entity.has(componentClassName: "\(MockComponent.self)"))
     }
 
+    func test_noComponentToRemove() {
+        let result = entity.remove(componentClass: MockComponent.self)
+        XCTAssertEqual(entity, result)
+    }
+
+    func test_componentHasNoEntity() {
+        let component: MockComponent = MockComponent()
+        entity.add(component: component)
+        component.entity = nil
+        let result = entity.remove(componentClass: MockComponent.self)
+        XCTAssertEqual(entity, result)
+    }
+
+    func test_removeAllComponents() {
+        let component1: MockComponent = MockComponent()
+        let component2: MockComponent2 = MockComponent2()
+        entity.add(component: component1)
+        entity.add(component: component2)
+        XCTAssertEqual(entity.components.count, 2)
+        entity.removeAllComponents()
+        XCTAssertEqual(entity.components.count, 0)
+    }
+
 //    func test_storingComponentTriggersAddedSignal() {
 //        var component: MockComponent = MockComponent()
 //        entity.componentAdded.add(async.add())
@@ -134,12 +157,12 @@ final class EntityTests: XCTestCase {
 
     func test_testEntityNameStoredAndReturned() {
         let name: String = "anything"
-        entity = Entity(name: name)
+        entity = Entity(named: name)
         XCTAssertEqual(entity.name, name)
     }
 
     func test_testEntityNameCanBeChanged() {
-        entity = Entity(name: "anything")
+        entity = Entity(named: "anything")
         entity.name = "otherThing"
         XCTAssertEqual(entity.name, "otherThing")
     }
