@@ -13,11 +13,11 @@ class SystemList {
             system?.previous = nil
         } else {
             var node: System? = tail
-            while node != nil {
+            while let currentNode = node {
                 if (node!.priority <= system!.priority) {
                     break
                 }
-                node = node?.previous //end
+                node = currentNode.previous
             }
             if node == tail {
                 tail?.next = system
@@ -45,21 +45,20 @@ class SystemList {
         if tail == system {
             tail = tail?.previous
         }
-        if system?.previous != nil {
-            system?.previous?.next = system?.next
+        if let previous = system?.previous {
+            previous.next = system?.next
         }
-        if system?.next != nil {
-            system?.next?.previous = system?.previous
+        if let next = system?.next {
+            next.previous = system?.previous
         }
         // N.B. Don't set system.next and system.previous to nil because that will break the list iteration if node is the current node in the iteration.
     }
 
     func removeAll() {
-        while head != nil {
-            let system: System? = head
+        while let currentSystem = head {
             head = head?.next
-            system?.previous = nil
-            system?.next = nil
+            currentSystem.previous = nil
+            currentSystem.next = nil
         }
         tail = nil
     }
@@ -67,11 +66,11 @@ class SystemList {
     func get(systemClassName: SystemClassName) -> System? {
         guard let head else { return nil }
         var system: System? = head
-        while system != nil {
-            if type(of: system!).name == systemClassName {
+        while let currentSystem = system {
+            if type(of: currentSystem).name == systemClassName {
                 return system
             }
-            system = system?.next //end
+            system = currentSystem.next
         }
         return nil
     }

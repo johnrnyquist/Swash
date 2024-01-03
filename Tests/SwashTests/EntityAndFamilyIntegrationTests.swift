@@ -130,10 +130,10 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         }
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         var node = nodes.head
-        while node != nil {
-            let entity = node!.entity!
+        while let currentNode = node {
+            let entity = currentNode.entity!
             XCTAssertTrue(entities.contains(entity))
-            node = node!.next
+            node = currentNode.next
         }
     }
 
@@ -148,12 +148,12 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         }
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         var node = nodes.head
-        while node != nil {
-            let entity = node!.entity!
+        while let currentNode = node {
+            let entity = currentNode.entity!
             if let index = entities.firstIndex(of: entity) {
                 entities.remove(at: index)
             }
-            node = node!.next
+            node = currentNode.next
         }
         XCTAssertTrue(entities.isEmpty)
     }

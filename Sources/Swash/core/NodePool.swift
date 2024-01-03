@@ -23,11 +23,10 @@ Creates a pool for the given node class.
 Fetches a node from the pool.
 */
     func get() -> Node {
-        if tail != nil {
-            let node: Node? = tail
+        if let node = tail {
             tail = tail?.previous
-            node?.previous = nil
-            return node! //safe because of nil check
+            node.previous = nil
+            return node
         } else {
             return (classFromString(className: nodeClassName) as! Node.Type).init()
         }
@@ -55,10 +54,9 @@ Adds a node to the cache because it cannot be disposed of yet as the engine is s
 Releases all nodes from the cache into the pool
 */
     func releaseCache() {
-        while cacheTail != nil {
-            let node: Node = cacheTail!
-            cacheTail = node.previous
-            dispose(node: node)
+        while let currentNode = cacheTail {
+            cacheTail = currentNode.previous
+            dispose(node: currentNode)
         }
     }
 }

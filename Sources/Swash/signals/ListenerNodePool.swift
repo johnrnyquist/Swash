@@ -11,10 +11,9 @@ final class ListenerNodePool {
     /// Gets a ListenerNode, it creates one if it does not have one.
     /// - Returns: a ListenerNode
     func get() -> ListenerNode? {
-        if tail != nil {
-            let node: ListenerNode? = tail
+        if let node = tail {
             tail = tail?.previous
-            node?.previous = nil
+            node.previous = nil
             return node
         } else {
             return ListenerNode()
@@ -42,11 +41,10 @@ final class ListenerNodePool {
 
     /// When a Signal is done dispatching, it will release the cache. 
     func releaseCache() {
-        while cacheTail != nil {
-            let node = cacheTail
-            cacheTail = node?.previous
-            node?.next = nil
-            node?.previous = tail
+        while let node = cacheTail {
+            cacheTail = node.previous
+            node.next = nil
+            node.previous = tail
             tail = node
         }
     }

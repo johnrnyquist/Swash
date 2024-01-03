@@ -22,14 +22,14 @@ public class Signaler1: Signaler {
     public func dispatch(_ object: TimeInterval) {
         startDispatch()
         var node = head
-        while node != nil {
-            node?.listener?(object)
-            if node?.once ?? false {
-                if let listener = node?.listener {
+        while let currentNode = node {
+            currentNode.listener?(object)
+            if currentNode.once {
+                if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = node?.next
+            node = currentNode.next
         }
         endDispatch()
     }
@@ -37,14 +37,14 @@ public class Signaler1: Signaler {
     public func dispatch(_ object: Node) {
         startDispatch()
         var node = head
-        while node != nil {
-            node?.listener?(object)
-            if node?.once ?? false {
-                if let listener = node?.listener {
+        while let currentNode = node {
+            currentNode.listener?(object)
+            if currentNode.once {
+                if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = node?.next
+            node = currentNode.next
         }
         endDispatch()
     }
@@ -52,14 +52,14 @@ public class Signaler1: Signaler {
     public func dispatch(_ object: Entity) {
         startDispatch()
         var node = head
-        while node != nil {
-            node?.listener?(object)
-            if node?.once ?? false {
-                if let listener = node?.listener {
+        while let currentNode = node {
+            currentNode.listener?(object)
+            if currentNode.once {
+                if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = node?.next
+            node = currentNode.next
         }
         endDispatch()
     }

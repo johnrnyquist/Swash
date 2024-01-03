@@ -27,21 +27,20 @@ class EntityList {
         if tail == entity {
             tail = tail?.previous
         }
-        if entity.previous != nil {
-            entity.previous?.next = entity.next
+        if let previous = entity.previous {
+            previous.next = entity.next
         }
-        if entity.next != nil {
-            entity.next?.previous = entity.previous
+        if let next = entity.next {
+            next.previous = entity.previous
         }
         // N.B. Don't set entity.next and entity.previous to nil because that will break the list iteration if node is the current node in the iteration.
     }
 
     func removeAll() {
-        while head != nil {
-            let entity: Entity? = head
-            head = head?.next
-            entity?.previous = nil
-            entity?.next = nil
+        while let entity = head {
+            head = entity.next
+            entity.previous = nil
+            entity.next = nil
         }
         tail = nil
     }

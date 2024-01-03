@@ -119,9 +119,9 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         }
         let nodes: NodeList = family.nodeList
         var node: Node? = nodes.head
-        while node != nil {
-            XCTAssertTrue(entities.contains(node!.entity!))
-            node = node!.next
+        while let currentNode = node {
+            XCTAssertTrue(entities.contains(currentNode.entity!))
+            node = currentNode.next
         }
     }
 

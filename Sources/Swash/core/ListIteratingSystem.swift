@@ -35,13 +35,13 @@ open class ListIteratingSystem: System {
 
     open override func addToEngine(engine: Engine) {
         nodeList = engine.getNodeList(nodeClassType: nodeClass)
-        if (nodeAddedFunction != nil) {
+        if let nodeAddedFunction  {
             var node = nodeList?.head
-            while node != nil {
-                nodeAddedFunction?(node!)
-                node = node!.next
+            while let currentNode = node {
+                nodeAddedFunction(currentNode)
+                node = currentNode.next
             }
-            if let nodeAddedFunction { nodeList?.nodeAdded.add(Listener(nodeAddedFunction)) }
+            nodeList?.nodeAdded.add(Listener(nodeAddedFunction))
         }
         if let nodeRemovedFunction {
             nodeList?.nodeRemoved.add(Listener(nodeRemovedFunction))
@@ -60,9 +60,9 @@ open class ListIteratingSystem: System {
 
     open override func update(time: TimeInterval) {
         var node = nodeList?.head
-        while node != nil {
-            nodeUpdateFunction?(node!, time)
-            node = node!.next
+        while let currentNode = node {
+            nodeUpdateFunction?(currentNode, time)
+            node = currentNode.next
         }
     }
 }

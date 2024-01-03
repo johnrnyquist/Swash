@@ -60,7 +60,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
      */
     public func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
-        guard components.firstIndex(of: componentClassName) != nil else { return }
+        guard let _ = components.firstIndex(of: componentClassName) else { return }
         removeIfMatch(entity: entity)
     }
 
@@ -97,7 +97,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     Removes the entity if it is in this family's NodeList.
     */
     func removeIfMatch(entity: Entity) {
-        guard entities[entity] != nil,
+        guard let _ = entities[entity],
               let node = entities[entity] else { return }
         entities.removeValue(forKey: entity)
         nodeList.remove(node: node)
@@ -123,11 +123,11 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      */
     public func cleanUp() {
         var node: Node? = nodeList.head
-        while node != nil {
-            if let entity = node?.entity {
+        while let currentNode = node {
+            if let entity = currentNode.entity {
                 entities.removeValue(forKey: entity)
             }
-            node = node?.next //end
+            node = currentNode.next //end
         }
         nodeList.removeAll()
     }

@@ -21,7 +21,7 @@ open class Signaler {
 
     func endDispatch() {
         dispatching = false
-        if (toAddHead != nil) {
+        if toAddHead != nil {
             if head == nil {
                 head = toAddHead
                 tail = toAddTail
@@ -41,7 +41,7 @@ open class Signaler {
     }
 
     public func add(_ listener: Listener) {
-        if nodes[listener] != nil {
+        if let _ = nodes[listener] {
             return
         }
         if let node = listenerNodePool.get() {
@@ -52,7 +52,7 @@ open class Signaler {
     }
 
     public func addOnce(_ listener: Listener) {
-        if nodes[listener] != nil {
+        if let _ = nodes[listener] {
             return
         }
         if let node = listenerNodePool.get() {
@@ -88,7 +88,7 @@ open class Signaler {
 
     public func remove(_ listener: Listener) {
         let node: ListenerNode? = nodes[listener]
-        if node != nil {
+        if let node {
             if head == node {
                 head = head?.next
             }
@@ -101,11 +101,11 @@ open class Signaler {
             if toAddTail == node {
                 toAddTail = toAddTail?.previous
             }
-            if node?.previous != nil {
-                node?.previous?.next = node?.next
+            if let previous = node.previous {
+                previous.next = node.next
             }
-            if node?.next != nil {
-                node?.next?.previous = node?.previous
+            if let next = node.next {
+                next.previous = node.previous
             }
             nodes.removeValue(forKey: listener)
             if dispatching {
@@ -118,10 +118,9 @@ open class Signaler {
     }
 
     public func removeAll() {
-        while head != nil {
-            let node: ListenerNode? = head
+        while let node = head {
             head = head?.next
-            nodes.removeValue(forKey: node!.listener!) //HACK
+            nodes.removeValue(forKey: node.listener!) //HACK
             listenerNodePool.dispose(node)
         }
         tail = nil

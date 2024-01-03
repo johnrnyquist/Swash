@@ -8,14 +8,14 @@ final public class Signaler2: Signaler {
     public func dispatch(_ object1: Entity, _ object2: ComponentClassName) {
         startDispatch()
         var node = head
-        while node != nil {
+        while let currentNode = node {
             node?.listener?(object1, object2)
             if node?.once ?? false {
-                if let listener = node?.listener {
+                if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = node?.next
+            node = currentNode.next
         }
         endDispatch()
     }

@@ -44,10 +44,10 @@ final class NodeListTests: XCTestCase {
             nodes.add(node: node)
         }
         var node = nodes.head //as? MockPosNode
-        while node != nil {
-            let index = nodeArray.firstIndex(of: node!)!
+        while let currentNode = node {
+            let index = nodeArray.firstIndex(of: currentNode)!
             nodeArray.remove(at: index)
-            node = node!.next
+            node = currentNode.next
         }
         XCTAssertTrue(nodeArray.isEmpty)
     }
@@ -61,14 +61,14 @@ final class NodeListTests: XCTestCase {
         }
         var count = 0
         var node = nodes.head //as? MockPosNode
-        while node != nil {
-            let index = nodeArray.firstIndex(of: node!)!
+        while let currentNode = node {
+            let index = nodeArray.firstIndex(of: currentNode)!
             nodeArray.remove(at: index)
             count += 1
             if (count == 2) {
-                nodes.remove(node: node!)
+                nodes.remove(node: currentNode)
             }
-            node = node!.next
+            node = currentNode.next
         }
         XCTAssertTrue(nodeArray.isEmpty)
     }
@@ -82,14 +82,14 @@ final class NodeListTests: XCTestCase {
         }
         var count = 0
         var node = nodes.head //as? MockPosNode
-        while node != nil {
-            let index = nodeArray.firstIndex(of: node!)!
+        while let currentNode = node {
+            let index = nodeArray.firstIndex(of: currentNode)!
             nodeArray.remove(at: index)
             count += 1
             if (count == 2) {
-                nodes.remove(node: node!.next!)
+                nodes.remove(node: currentNode.next!)
             }
-            node = node!.next
+            node = currentNode.next
         }
         XCTAssertEqual(nodeArray.count, 1)
     }

@@ -106,9 +106,9 @@ public class Engine {
     public var entities: [Entity] {
         var entities = [Entity]()
         var entity = entityList.head
-        while entity != nil {
-            entities.append(entity!)
-            entity = entity?.next //end
+        while let currentEntity = entity {
+            entities.append(currentEntity)
+            entity = currentEntity.next //end
         }
         return entities
     }
@@ -161,7 +161,7 @@ public class Engine {
     - Parameter nodeClassName: The type of the node class if the list to be released.
     */
     public func releaseNodeList(nodeClassName: NodeClassName) {
-        if ((families[nodeClassName]) != nil) {
+        if let _ = families[nodeClassName] {
             families[nodeClassName]?.cleanUp()
         }
         families.removeValue(forKey: nodeClassName)
@@ -202,9 +202,9 @@ public class Engine {
     public var systems: [System] {
         var systems = [System]()
         var system = systemList.head
-        while system != nil {
-            systems.append(system!)
-            system = system!.next //end
+        while let currentSystem = system {
+            systems.append(currentSystem)
+            system = currentSystem.next
         }
         return systems
     }
@@ -222,12 +222,11 @@ public class Engine {
     Remove all systems from the engine.
     */
     public func removeAllSystems() {
-        while systemList.head != nil {
-            let system: System? = systemList.head
-            systemList.head = systemList.head?.next
-            system?.previous = nil
-            system?.next = nil
-            system?.removeFromEngine(engine: self)
+        while let system = systemList.head {
+            systemList.head = system.next
+            system.previous = nil
+            system.next = nil
+            system.removeFromEngine(engine: self)
         }
         systemList.tail = nil
     }
@@ -243,9 +242,9 @@ public class Engine {
     public func update(time: TimeInterval) {
         updating = true
         var system: System? = systemList.head
-        while system != nil {
-            system?.update(time: time)
-            system = system?.next
+        while let currentSystem = system {
+            currentSystem.update(time: time)
+            system = currentSystem.next
         }
         updating = false
         updateComplete.dispatch()

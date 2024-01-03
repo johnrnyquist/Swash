@@ -56,11 +56,11 @@ public class NodeList {
         if tail == node {
             tail = tail?.previous
         }
-        if node.previous != nil {
-            node.previous?.next = node.next
+        if let previous = node.previous {
+            previous.next = node.next
         }
-        if node.next != nil {
-            node.next?.previous = node.previous
+        if let next = node.next {
+            next.previous = node.previous
         }
         numNodes -= 1
         nodeRemoved.dispatch(node)
@@ -68,12 +68,11 @@ public class NodeList {
 
     func removeAll() {
         numNodes = 0
-        while head != nil {
-            let node: Node? = head
-            head = node?.next
-            node?.previous = nil
-            node?.next = nil
-            nodeRemoved.dispatch(node!)
+        while let node = head {
+            head = node.next
+            node.previous = nil
+            node.next = nil
+            nodeRemoved.dispatch(node)
         }
         tail = nil
     }
@@ -133,17 +132,17 @@ public class NodeList {
         } else if (tail === node2) {
             tail = node1
         }
-        if node1.previous != nil {
-            node1.previous?.next = node1
+        if let previous = node1.previous {
+            previous.next = node1
         }
-        if node2.previous != nil {
-            node2.previous?.next = node2
+        if let previous = node2.previous {
+            previous.next = node2
         }
-        if node1.next != nil {
-            node1.next?.previous = node1
+        if let next = node1.next {
+            next.previous = node1
         }
-        if node2.next != nil {
-            node2.next?.previous = node2
+        if let next = node2.next {
+            next.previous = node2
         }
     }
 
@@ -157,61 +156,57 @@ public class NodeList {
     This insertion sort implementation runs in place so no objects are created during the sort.
     */
     public func insertionSort(sortFunction: (Node?, Node?) -> Int) {
-        guard head != tail else { return }
-        var remains: Node? = head?.next
+        guard let headNode = head, let tailNode = tail, headNode !== tailNode else { return }
+        var remains: Node? = headNode.next
         var node: Node? = remains
-        while node != nil {
-            remains = node?.next
-            var other: Node? = node?.previous
-            inner:
-            while other != nil {
-                if (sortFunction(node, other) >= 0) {
+        while let currentNode = node {
+            remains = currentNode.next
+            var other: Node? = currentNode.previous
+        inner:
+            while let otherNode = other {
+                if (sortFunction(currentNode, otherNode) >= 0) {
                     // move node to after other
-                    if node != other?.next {
+                    if let otherNext = otherNode.next, currentNode !== otherNext {
                         // remove from place
-                        if tail == node {
-                            tail = node?.previous
+                        if tailNode === currentNode {
+                            tail = currentNode.previous
                         }
-                        node?.previous?.next = node?.next
-                        if node?.next != nil {
-                            node?.next?.previous = node?.previous
-                        }
+                        currentNode.previous?.next = currentNode.next
+                        currentNode.next?.previous = currentNode.previous
                         // insert after other
-                        node?.next = other?.next
-                        node?.previous = other
-                        node?.next?.previous = node
-                        other?.next = node
+                        currentNode.next = otherNext
+                        currentNode.previous = otherNode
+                        otherNext.previous = currentNode
+                        otherNode.next = currentNode
                     }
                     break inner // exit the inner for loop
                 }
-                other = other?.previous //end inner
+                other = otherNode.previous //end inner
             }
             if other == nil // the node belongs at the start of the list
             {
                 // remove from place
-                if tail == node {
-                    tail = node?.previous
+                if tailNode === currentNode {
+                    tail = currentNode.previous
                 }
-                node?.previous?.next = node?.next
-                if node?.next != nil {
-                    node?.next?.previous = node?.previous
-                }
+                currentNode.previous?.next = currentNode.next
+                currentNode.next?.previous = currentNode.previous
                 // insert at head
-                node?.next = head
-                head?.previous = node
-                node?.previous = nil
-                head = node
+                currentNode.next = head
+                head?.previous = currentNode
+                currentNode.previous = nil
+                head = currentNode
             }
             node = remains //end outer
         }
     }
-    
+
     public func toArray() -> [Node] {
         var array = [Node]()
         var node = head
-        while node != nil {
-            array.append(node!)
-            node = node!.next
+        while let currentNode = node {
+            array.append(currentNode)
+            node = currentNode.next
         }
         return array
     }

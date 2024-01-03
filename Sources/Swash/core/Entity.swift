@@ -62,7 +62,7 @@ open class Entity {
         component.entity = self
         let componentClass = type(of: component)
         let componentClassName = "\(componentClass)"
-        if components[componentClassName] != nil {
+        if let _ = components[componentClassName] {
             components.removeValue(forKey: componentClassName)
         }
         components[componentClassName] = component
