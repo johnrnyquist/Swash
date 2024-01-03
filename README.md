@@ -3,7 +3,7 @@
 
 # Swash: An ECS framework for Swift
 
-Swash is an entity systems component framework. The name "Swash" is a portmanteau of "Swift" and "Ash". Swash is a work-in-progress.
+Swash is a small, fast entity systems component framework. The name "Swash" is a portmanteau of "Swift" and "Ash". Swash is a work-in-progress.
 
 
 ## ECS Warning... There be dragons here!
