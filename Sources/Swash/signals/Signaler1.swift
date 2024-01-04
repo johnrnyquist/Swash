@@ -2,7 +2,7 @@ import struct Foundation.TimeInterval
 
 /// The 1 in the name means 1 parameter.
 public class Signaler1: Signaler {
-    private var type: Node.Type? = nil
+    private var nodeType: Node.Type? = nil
     private weak var entity: Entity? = nil
 
     public override init() { 
@@ -10,7 +10,7 @@ public class Signaler1: Signaler {
     }
 
     public init(_ type: Node.Type) {
-        self.type = type
+        self.nodeType = type
         super.init()
     }
 

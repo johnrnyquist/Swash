@@ -1,12 +1,12 @@
 /**
-The default class for managing a NodeList. 
-This class creates the NodeList and adds and removes nodes to/from the list as the entities and the components in the engine change.
-It uses the basic entity matching pattern of an entity system - 
-entities are added to the list if they contain components matching all the public properties of the node class.
+This class adds and removes nodes to/from a node list as the entities and the components 
+in the engine change.  An `Entity` is added to this family’s node list if it contains components 
+matching all component class names in the components dictionary of the node subclass. 
+The Engine in turn has a list of `ComponentMatchingFamily`s.
 */
 final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     public var description: String { "\(Self.self)_\(nodeClassName)" }
-    private var components: [ComponentClassName] = []
+    private var componentClassNames: [ComponentClassName] = []
     private var engine: Engine
     private var entities: [Entity: Node] = [:]
     private var nodeClassName: NodeClassName
@@ -14,10 +14,10 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
 
     /**
      The constructor. Creates a ComponentMatchingFamily to provide a NodeList for the
-     given node class.
+     given `Node` subclass.
      - Parameters:
-      - nodeClassType: The type of node to create and manage a NodeList for.
-      - engine: The engine that this family is managing the NodeList for.
+      - nodeClassType: The type for the node subclass.
+      - engine: The engine for which this family is managing its node list.
     */
     public init(nodeClassType: Node.Type, engine: Engine) {
         nodeList = NodeList()
@@ -30,7 +30,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         nodePool = NodePool(nodeClassName: nodeClassName)
 //        nodePool.dispose(node: nodePool.get()) // create a dummy instance to ensure creating Node works.
         for (componentClassName, _) in nodeClassType.init().components {
-            components.append(componentClassName) //component.value
+            componentClassNames.append(componentClassName) //component.value
         }
     }
 
@@ -60,7 +60,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
      */
     public func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
-        guard let _ = components.firstIndex(of: componentClassName) else { return }
+        guard let _ = componentClassNames.firstIndex(of: componentClassName) else { return }
         removeIfMatch(entity: entity)
     }
 
@@ -78,7 +78,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         // does the ComponentMatchingFamily have a reference to this entity yet?
         guard entities[entity] == nil else { return }
         // go through all the components return if it does not have a component required by this family. 
-        for componentClassName in components {
+        for componentClassName in componentClassNames {
             if entity.has(componentClassName: componentClassName) == false { return }
         }
         // This family is related to a specific Node name. 
@@ -86,7 +86,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         let node: Node = nodePool.get() // This will dynamically create the right Node type.
         node.entity = entity
         // Populate the nodes’s components
-        for componentClassName in components {
+        for componentClassName in componentClassNames {
             node.components[componentClassName] = entity.get(componentClassName: componentClassName)
         }
         entities[entity] = node
