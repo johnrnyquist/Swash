@@ -34,8 +34,8 @@ open class Entity {
             _name = "_entity\(Entity.nameCount)"
         }
         componentAdded = Signaler1(self)
-        componentRemoved = Signaler2(self, nil)
-        nameChanged = Signaler2(self, name)
+        componentRemoved = Signaler2()
+        nameChanged = Signaler2()
     }
 
     /// All entities have a name. If no name is set, a default name is used. 

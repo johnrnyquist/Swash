@@ -1,19 +1,13 @@
 import struct Foundation.TimeInterval
 
-/// The 1 in the name means 1 parameter.
+/// The 1 in the name means 1 parameter in its dispatch method.
 public class Signaler1: Signaler {
-    private var nodeType: Node.Type? = nil
     private weak var entity: Entity? = nil
 
     public override init() { 
         super.init()
     }
-
-    public init(_ type: Node.Type) {
-        self.nodeType = type
-        super.init()
-    }
-
+    
     public init(_ entity: Entity) {
         self.entity = entity
         super.init()

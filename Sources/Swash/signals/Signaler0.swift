@@ -1,5 +1,4 @@
-/// Provides a fast signal for use where no parameters are dispatched with the signal. 
-/// The zero in the name means zero parameters.
+/// The zero in the name means zero parameters in the dispatch method.
 final public class Signaler0: Signaler {
     override public init() {
         super.init()

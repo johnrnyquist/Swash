@@ -1,10 +1,6 @@
-/// The 2 in the name means 2 parameters.
+/// The 2 in the name means 2 parameters in its dispatch method.
 /// Only used in Entity class
 final public class Signaler2: Signaler {
-    public init(_ entity: Entity, _ value: Any?) {
-        super.init()
-    }
-
     public func dispatch(_ object1: Entity, _ object2: ComponentClassName) {
         startDispatch()
         var node = head

@@ -29,8 +29,8 @@ public class NodeList {
     public var numNodes = 0
 
     public init() {
-        nodeAdded = Signaler1(Node.self)
-        nodeRemoved = Signaler1(Node.self)
+        nodeAdded = Signaler1()
+        nodeRemoved = Signaler1()
     }
 
     func add(node: Node) {
