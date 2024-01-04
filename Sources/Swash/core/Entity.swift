@@ -91,7 +91,7 @@ open class Entity {
 
     /// Get a component from the entity.
     /// - Parameter componentClassName: The class of the component requested.
-    /// - Returns: The component, or null if none was found.
+    /// - Returns: The component, or nil if none was found.
     public func get(componentClassName: ComponentClassName) -> Component? {
         return components[componentClassName]
     }

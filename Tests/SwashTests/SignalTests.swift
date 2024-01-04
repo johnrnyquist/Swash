@@ -18,7 +18,7 @@ final class SignalTest: XCTestCase {
         signal = nil
     }
 
-    func test_newSignalHasNullHead() {
+    func test_newSignalHasNilHead() {
         XCTAssertNil(signal.head)
     }
 

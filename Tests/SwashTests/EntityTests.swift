@@ -69,7 +69,7 @@ final class EntityTests: XCTestCase {
         XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component)
     }
 
-    func test_getReturnNullIfNoComponent() {
+    func test_getReturnNilIfNoComponent() {
         XCTAssertNil(entity.get(componentClassName: "\(MockComponent.self)"))
     }
 

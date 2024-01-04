@@ -124,53 +124,6 @@ final class ComponentMatchingFamilyTests: XCTestCase {
             node = currentNode.next
         }
     }
-
-//    func nodeListContainsAllMatchingEntities() {
-//        var entities = [Entity]()
-//        var i = 0
-//        while i < 5 {
-//            var entity: Entity = Entity()
-//            entity.add(PointComponent())
-//            entities.push(entity)
-//            family.new(entity)
-//            family.new(Entity())
-//
-//            i += 1
-//        }
-//        var nodes: NodeList = family.nodeList
-//        var node: Node? = nodes.head
-//        while node != nil {
-//            var index = entities.indexOf(node.entity)
-//            entities.splice(index, 1)
-//            node = node?.next
-//        }
-//        XCTAssertTrue(entities, emptyArray())
-//    }
-
-    func cleanUpEmptiesNodeList() {
-        let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
-        let nodes: NodeList = family.nodeList
-        family.cleanUp()
-        XCTAssertNil(nodes.head)
-    }
-
-    func cleanUpSetsNextNodeToNull() {
-        var entities = [Entity]()
-        var i = 0
-        while i < 5 {
-            let entity: Entity = Entity()
-            entity.add(component: PointComponent())
-            entities.append(entity)
-            family.new(entity: entity)
-            i += 1
-        }
-        let nodes: NodeList = family.nodeList
-        let node = nodes.head?.next
-        family.cleanUp()
-        XCTAssertNil(node?.next)
-    }
 }
 
  

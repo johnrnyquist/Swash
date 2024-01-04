@@ -168,7 +168,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         XCTAssertNil(nodes.head)
     }
 
-    func releaseFamilySetsNextNodeToNull() {
+    func releaseFamilySetsNextNodeToNil() {
         var entities = [Entity]()
         for _ in 1...5 {
             let entity = Entity()
