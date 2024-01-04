@@ -15,45 +15,45 @@ public class Signaler1: Signaler {
 
     public func dispatch(_ object: TimeInterval) {
         startDispatch()
-        var node = head
-        while let currentNode = node {
+        var listenerNode = head
+        while let currentNode = listenerNode {
             currentNode.listener?(object)
             if currentNode.once {
                 if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = currentNode.next
+            listenerNode = currentNode.next
         }
         endDispatch()
     }
 
     public func dispatch(_ object: Node) {
         startDispatch()
-        var node = head
-        while let currentNode = node {
+        var listenerNode = head
+        while let currentNode = listenerNode {
             currentNode.listener?(object)
             if currentNode.once {
                 if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = currentNode.next
+            listenerNode = currentNode.next
         }
         endDispatch()
     }
 
     public func dispatch(_ object: Entity) {
         startDispatch()
-        var node = head
-        while let currentNode = node {
+        var listenerNode = head
+        while let currentNode = listenerNode {
             currentNode.listener?(object)
             if currentNode.once {
                 if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = currentNode.next
+            listenerNode = currentNode.next
         }
         endDispatch()
     }

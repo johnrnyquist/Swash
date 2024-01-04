@@ -11,10 +11,10 @@ final class ListenerNodePool {
     /// Gets a ListenerNode, it creates one if it does not have one.
     /// - Returns: a ListenerNode
     func get() -> ListenerNode? {
-        if let node = tail {
+        if let listenerNode = tail {
             tail = tail?.previous
-            node.previous = nil
-            return node
+            listenerNode.previous = nil
+            return listenerNode
         } else {
             return ListenerNode()
         }
@@ -22,30 +22,30 @@ final class ListenerNodePool {
 
     /// It removes the node’s lisenter, and puts this node at the tail of the pool so it can be reused.
     /// - Parameter node: A node to be disposed of.
-    func dispose(_ node: ListenerNode?) {
-        node?.listener = nil
-        node?.once = false
-        node?.next = nil
-        node?.previous = tail
-        tail = node
+    func dispose(_ listenerNode: ListenerNode?) {
+        listenerNode?.listener = nil
+        listenerNode?.once = false
+        listenerNode?.next = nil
+        listenerNode?.previous = tail
+        tail = listenerNode
     }
 
     /// When a Signal is dispatching and it needs to remove a node, it will cache it.
     /// When it is done dispatching, it release the cache.
     /// - Parameter node: The node to be cached.
-    func cache(_ node: ListenerNode?) {
-        node?.listener = nil
-        node?.previous = cacheTail
-        cacheTail = node
+    func cache(_ listenerNode: ListenerNode?) {
+        listenerNode?.listener = nil
+        listenerNode?.previous = cacheTail
+        cacheTail = listenerNode
     }
 
     /// When a Signal is done dispatching, it will release the cache. 
     func releaseCache() {
-        while let node = cacheTail {
-            cacheTail = node.previous
-            node.next = nil
-            node.previous = tail
-            tail = node
+        while let listenerNode = cacheTail {
+            cacheTail = listenerNode.previous
+            listenerNode.next = nil
+            listenerNode.previous = tail
+            tail = listenerNode
         }
     }
 }

@@ -3,7 +3,7 @@
 open class Signaler {
     var head: ListenerNode?
     var tail: ListenerNode?
-    private var nodes: [Listener: ListenerNode] = [:]
+    private var listenerDictionary: [Listener: ListenerNode] = [:]
     private var listenerNodePool: ListenerNodePool
     private var toAddHead: ListenerNode?
     private var toAddTail: ListenerNode?
@@ -11,7 +11,7 @@ open class Signaler {
     private var _numListeners = 0
 
     public init() {
-        nodes = [:]
+        listenerDictionary = [:]
         listenerNodePool = ListenerNodePool()
     }
 
@@ -41,25 +41,25 @@ open class Signaler {
     }
 
     public func add(_ listener: Listener) {
-        if let _ = nodes[listener] {
+        if let _ = listenerDictionary[listener] {
             return
         }
         if let node = listenerNodePool.get() {
             node.listener = listener
-            nodes[listener] = node
+            listenerDictionary[listener] = node
             addNode(node)
         }
     }
 
     public func addOnce(_ listener: Listener) {
-        if let _ = nodes[listener] {
+        if let _ = listenerDictionary[listener] {
             return
         }
-        if let node = listenerNodePool.get() {
-            node.listener = listener
-            node.once = true
-            nodes[listener] = node
-            addNode(node)
+        if let listenerNode = listenerNodePool.get() {
+            listenerNode.listener = listener
+            listenerNode.once = true
+            listenerDictionary[listener] = listenerNode
+            addNode(listenerNode)
         }
     }
 
@@ -87,41 +87,41 @@ open class Signaler {
     }
 
     public func remove(_ listener: Listener) {
-        let node: ListenerNode? = nodes[listener]
-        if let node {
-            if head == node {
+        let listenerNode = listenerDictionary[listener]
+        if let listenerNode {
+            if head == listenerNode {
                 head = head?.next
             }
-            if tail == node {
+            if tail == listenerNode {
                 tail = tail?.previous
             }
-            if (toAddHead == node) {
+            if (toAddHead == listenerNode) {
                 toAddHead = toAddHead?.next
             }
-            if toAddTail == node {
+            if toAddTail == listenerNode {
                 toAddTail = toAddTail?.previous
             }
-            if let previous = node.previous {
-                previous.next = node.next
+            if let previous = listenerNode.previous {
+                previous.next = listenerNode.next
             }
-            if let next = node.next {
-                next.previous = node.previous
+            if let next = listenerNode.next {
+                next.previous = listenerNode.previous
             }
-            nodes.removeValue(forKey: listener)
+            listenerDictionary.removeValue(forKey: listener)
             if dispatching {
-                listenerNodePool.cache(node)
+                listenerNodePool.cache(listenerNode)
             } else {
-                listenerNodePool.dispose(node)
+                listenerNodePool.dispose(listenerNode)
             }
             _numListeners -= 1
         }
     }
 
     public func removeAll() {
-        while let node = head {
+        while let listenerNode = head {
             head = head?.next
-            nodes.removeValue(forKey: node.listener!) //HACK
-            listenerNodePool.dispose(node)
+            listenerDictionary.removeValue(forKey: listenerNode.listener!) //HACK
+            listenerNodePool.dispose(listenerNode)
         }
         tail = nil
         toAddHead = nil

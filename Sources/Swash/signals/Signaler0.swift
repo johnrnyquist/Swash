@@ -6,15 +6,15 @@ final public class Signaler0: Signaler {
 
     public func dispatch() {
         startDispatch()
-        var node = head
-        while let currentNode = node {
+        var listenerNode = head
+        while let currentNode = listenerNode {
             currentNode.listener?()
             if currentNode.once {
                 if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = currentNode.next
+            listenerNode = currentNode.next
         }
         endDispatch()
     }

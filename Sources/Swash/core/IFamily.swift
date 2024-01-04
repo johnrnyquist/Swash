@@ -24,6 +24,7 @@ public protocol IFamily {
     The family is about to be discarded. Clean up all properties as necessary. Usually, you will want to empty the NodeList at this time.
      */
     func cleanUp()
+    
     // MARK: - Deprecated
     @available(iOS,
                deprecated,

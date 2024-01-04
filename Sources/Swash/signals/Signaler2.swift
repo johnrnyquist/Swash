@@ -3,15 +3,15 @@
 final public class Signaler2: Signaler {
     public func dispatch(_ object1: Entity, _ object2: ComponentClassName) {
         startDispatch()
-        var node = head
-        while let currentNode = node {
-            node?.listener?(object1, object2)
-            if node?.once ?? false {
+        var listenerNode = head
+        while let currentNode = listenerNode {
+            listenerNode?.listener?(object1, object2)
+            if listenerNode?.once ?? false {
                 if let listener = currentNode.listener {
                     remove(listener)
                 }
             }
-            node = currentNode.next
+            listenerNode = currentNode.next
         }
         endDispatch()
     }
