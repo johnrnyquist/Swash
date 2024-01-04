@@ -16,7 +16,7 @@ public class Engine {
     The class must implement the Family interface.
     */
     var familyClass: IFamily.Type = ComponentMatchingFamily.self
-    var families: [NodeClassName: IFamily] = [:] // instead of Node.Type
+    var families: [NodeClassName: IFamily] = [:]
     /**
     Indicates if the engine is currently in its update loop.
     */
