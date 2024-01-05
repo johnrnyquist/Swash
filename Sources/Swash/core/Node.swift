@@ -30,7 +30,6 @@ open class Node {
 
 extension Node: Equatable {
 	public static func == (lhs: Node, rhs: Node) -> Bool {
-		lhs.entity == rhs.entity &&
-		lhs.components == rhs.components
+		lhs === rhs
 	}
 }

@@ -50,10 +50,10 @@ public class NodeList {
     }
 
     func remove(node: Node) {
-        if head == node {
+        if head === node {
             head = head?.next
         }
-        if tail == node {
+        if tail === node {
             tail = tail?.previous
         }
         if let previous = node.previous {

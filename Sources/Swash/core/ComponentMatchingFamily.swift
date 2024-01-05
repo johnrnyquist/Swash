@@ -4,7 +4,7 @@ in the engine change.  An `Entity` is added to this family’s node list if it c
 matching all component class names in the components dictionary of the node subclass. 
 The Engine in turn has a list of `ComponentMatchingFamily`s.
 */
-final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
+open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     public var description: String { "\(Self.self)_\(nodeClassName)" }
     private var componentClassNames: [ComponentClassName] = []
     private var engine: Engine
@@ -13,22 +13,17 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     private var nodePool: NodePool
 
     /**
-     The constructor. Creates a ComponentMatchingFamily to provide a NodeList for the
+     Creates a ComponentMatchingFamily to provide a NodeList for the
      given `Node` subclass.
      - Parameters:
       - nodeClassType: The type for the node subclass.
       - engine: The engine for which this family is managing its node list.
     */
-    public init(nodeClassType: Node.Type, engine: Engine) {
+    required public init(nodeClassType: Node.Type, engine: Engine) {
         nodeList = NodeList()
         nodeClassName = "\(nodeClassType)"
         self.engine = engine
-        /**
-         Initializes the class. Creates the nodelist and other tools. 
-        Analyses the node to determine what component types the node requires.
-         */
         nodePool = NodePool(nodeClassName: nodeClassName)
-//        nodePool.dispose(node: nodePool.get()) // create a dummy instance to ensure creating Node works.
         for (componentClassName, _) in nodeClassType.init().components {
             componentClassNames.append(componentClassName) //component.value
         }
@@ -43,7 +38,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      Called by the engine when an entity has been added to it.
      We check if the entity should be in this family's NodeList and add it if appropriate.
      */
-    public func new(entity: Entity) {
+    open func new(entity: Entity) {
         addIfMatch(entity: entity)
     }
 
@@ -52,14 +47,14 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      - Parameters:
      - entity: The entity with the component added.
      */
-    public func componentAddedTo(entity: Entity) {
+    open func componentAddedTo(entity: Entity) {
         addIfMatch(entity: entity)
     }
 
     /**
      Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
      */
-    public func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
+    open func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
         guard let _ = componentClassNames.firstIndex(of: componentClassName) else { return }
         removeIfMatch(entity: entity)
     }
@@ -67,7 +62,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     /**
      Called by the engine when an entity has been rmoved from it. We check if the entity is in this family's NodeList and remove it if so.
      */
-    public func remove(entity: Entity) {
+    open func remove(entity: Entity) {
         removeIfMatch(entity: entity)
     }
 
@@ -83,7 +78,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         }
         // This family is related to a specific Node name. 
         // A Node defines components used together in a system.
-        let node: Node = nodePool.get() // This will dynamically create the right Node type.
+        let node: Node = nodePool.get() // This will dynamically create an instance of the right Node type.
         node.entity = entity
         // Populate the nodes’s components
         for componentClassName in componentClassNames {
@@ -121,7 +116,7 @@ final public class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     /**
      Removes all nodes from the NodeList.
      */
-    public func cleanUp() {
+    open func cleanUp() {
         var node: Node? = nodeList.head
         while let currentNode = node {
             if let entity = currentNode.entity {

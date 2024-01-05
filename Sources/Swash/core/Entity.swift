@@ -59,7 +59,6 @@ open class Entity {
     /// creating and configuring entities cleaner. 
     @discardableResult
     public func add<T: Component>(component: T) -> Entity {
-        component.entity = self
         let componentClass = type(of: component)
         let componentClassName = "\(componentClass)"
         if let _ = components[componentClassName] {
@@ -75,18 +74,13 @@ open class Entity {
     /// - Returns: the component’s entity or the entity itself
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
-        guard let component = components[componentClass.name] as? T else {
+        guard let _ = components[componentClass.name] as? T else {
             print("Component of class \(componentClass.name) does not exist in the entity.")
             return self
         }
         components.removeValue(forKey: componentClass.name)
         componentRemoved?.dispatch(self, componentClass.name)
-        if let entity = component.entity {
-            return entity
-        } else {
-            print("Entity of the component is nil.")
-            return self
-        }
+        return self
     }
 
     /// Get a component from the entity.

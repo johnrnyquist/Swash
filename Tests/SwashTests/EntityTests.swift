@@ -106,14 +106,6 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(entity, result)
     }
 
-    func test_componentHasNoEntity() {
-        let component: MockComponent = MockComponent()
-        entity.add(component: component)
-        component.entity = nil
-        let result = entity.remove(componentClass: MockComponent.self)
-        XCTAssertEqual(entity, result)
-    }
-
     func test_removeAllComponents() {
         let component1: MockComponent = MockComponent()
         let component2: MockComponent2 = MockComponent2()
@@ -124,32 +116,6 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(entity.components.count, 0)
     }
 
-//    func test_storingComponentTriggersAddedSignal() {
-//        var component: MockComponent = MockComponent()
-//        entity.componentAdded.add(async.add())
-//        entity.add(component)
-//    }
-//    func test_removingComponentTriggersRemovedSignal() {
-//        var component: MockComponent = MockComponent()
-//        entity.add(component)
-//        entity.componentRemoved.add(async.add())
-//        entity.remove(MockComponent)
-//    }
-//    func test_componentAddedSignalContainsCorrectParameters() {
-//        var component: MockComponent = MockComponent()
-//        entity.componentAdded.add(async.add(testSignalContent, 10))
-//        entity.add(component)
-//    }
-//    func test_componentRemovedSignalContainsCorrectParameters() {
-//        var component: MockComponent = MockComponent()
-//        entity.add(component)
-//        entity.componentRemoved.add(async.add(testSignalContent, 10))
-//        entity.remove(MockComponent)
-//    }
-//    private function testSignalContent( signalEntity : Entity, componentClass : Class ) {
-//    XCTAssertEqual( signalEntity, sameInstance( entity ) )
-//    XCTAssertEqual( componentClass, sameInstance( MockComponent ) )
-//}
     func test_testEntityHasNameByDefault() {
         entity = Entity()
         XCTAssertGreaterThan(entity.name.count, 0)
@@ -166,12 +132,6 @@ final class EntityTests: XCTestCase {
         entity.name = "otherThing"
         XCTAssertEqual(entity.name, "otherThing")
     }
-
-//    func test_testChangingEntityNameDispatchesSignal() {
-//        entity = Entity("anything")
-//        entity.nameChanged.add(async.add(JListener(nameChangedSignal), 10))
-//        entity.name = "otherThing"
-//    }
 
     func nameChangedSignal(signalEntity: Entity, oldName: String) {
         XCTAssertTrue(signalEntity === entity)
