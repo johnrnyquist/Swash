@@ -1,8 +1,6 @@
 import struct Foundation.TimeInterval
-import struct Foundation.UUID
 
 open class System {
-	let _id = UUID()
 
 	static public var name: String {
         "\(Self.self)"
@@ -52,12 +50,8 @@ open class System {
     }
 }
 
-extension System: Identifiable {
-	public var id: UUID { _id }
-}
-
 extension System: Equatable {
 	public static func == (lhs: System, rhs: System) -> Bool {
-		lhs.id == rhs.id
+		lhs === rhs
 	}
 }

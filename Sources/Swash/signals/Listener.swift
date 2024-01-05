@@ -1,5 +1,4 @@
 import struct Foundation.TimeInterval
-import struct Foundation.UUID
 
 public typealias Entity_NoReturn = (Entity) -> Void
 public typealias Entity_String_NoReturn = (Entity, ComponentClassName) -> Void
@@ -11,7 +10,6 @@ public typealias TimeInterval_NoReturn = (TimeInterval) -> Void
 /// Acts as a listener to a ``Signaler``.
 public class Listener {
     //MARK:- Properties
-    let _id = UUID()
     var entity_noReturn: Entity_NoReturn?
     var entity_string_noReturn: Entity_String_NoReturn?
     var noArg_noReturn: NoArg_NoReturn?
@@ -71,16 +69,15 @@ extension Listener {
     }
 }
 
-extension Listener: Identifiable {
-    public var id: UUID { _id }
-}
 
 extension Listener: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(ObjectIdentifier(self))
     }
 }
 
 extension Listener: Equatable {
-    static public func ==(lhs: Listener, rhs: Listener) -> Bool { lhs.id == rhs.id }
+    static public func ==(lhs: Listener, rhs: Listener) -> Bool {
+        lhs === rhs
+    }
 }

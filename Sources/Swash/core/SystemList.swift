@@ -19,7 +19,7 @@ class SystemList {
                 }
                 node = currentNode.previous
             }
-            if node == tail {
+            if node === tail {
                 tail?.next = system
                 system?.previous = tail
                 system?.next = nil
@@ -39,10 +39,10 @@ class SystemList {
     }
 
     func remove(system: System?) {
-        if head == system {
+        if head === system {
             head = head?.next
         }
-        if tail == system {
+        if tail === system {
             tail = tail?.previous
         }
         if let previous = system?.previous {
