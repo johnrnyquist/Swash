@@ -2,7 +2,7 @@ import struct Foundation.TimeInterval
 
 open class System {
 
-	static public var name: String {
+	static public var name: SystemClassName {
         "\(Self.self)"
     }
 

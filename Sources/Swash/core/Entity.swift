@@ -117,7 +117,7 @@ open class Entity {
     @available(iOS,
                deprecated,
                message: "The initializer `init(name:)` is deprecated and will be removed in version 1.1. Please use `init(named:)` instead.")
-    public convenience init(name: String = "") {
+    public convenience init(name: EntityName = "") {
         self.init(named: name)
     }
 }

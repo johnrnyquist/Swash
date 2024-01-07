@@ -2,7 +2,7 @@ public let nil_component: Component? = nil
 
 /// All components must extend this class
 open class Component {
-	static public var name: String {
+	static public var name: ComponentClassName {
 		"\(Self.self)"
 	}
 	public init() { }

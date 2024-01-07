@@ -77,7 +77,7 @@ public class Engine {
         entityList.remove(entity: entity)
     }
 
-    private func entityNameChanged(entity: Entity, oldName: String) {
+    private func entityNameChanged(entity: Entity, oldName: EntityName) {
         guard entityNames[oldName] == entity else { return }
         entityNames.removeValue(forKey: oldName)
         entityNames[entity.name] = entity
@@ -89,7 +89,7 @@ public class Engine {
     @param name The name of the entity
     @return The entity, or nil if no entity with that name exists on the engine
     */
-    public func getEntity(named: String) -> Entity? {
+    public func getEntity(named: EntityName) -> Entity? {
         return entityNames[named]
     }
 
