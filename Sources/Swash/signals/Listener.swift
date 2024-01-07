@@ -1,17 +1,29 @@
 import struct Foundation.TimeInterval
 
-public typealias Entity_NoReturn = (Entity) -> Void
-public typealias Entity_String_NoReturn = (Entity, ComponentClassName) -> Void
-public typealias NoArg_NoReturn = () -> Void
-public typealias Node_NoReturn = (Node) -> Void
-public typealias Node_TimeInterval_NoReturn = (Node, TimeInterval) -> Void
-public typealias TimeInterval_NoReturn = (TimeInterval) -> Void
+public typealias
+    Entity_NoReturn =
+    (Entity) -> Void
+public typealias
+    Entity_ComponentClassName_NoReturn =
+    (Entity, ComponentClassName) -> Void
+public typealias
+    NoArg_NoReturn =
+    () -> Void
+public typealias
+    Node_NoReturn =
+    (Node) -> Void
+public typealias
+    Node_TimeInterval_NoReturn =
+    (Node, TimeInterval) -> Void
+public typealias
+    TimeInterval_NoReturn =
+    (TimeInterval) -> Void
 
 /// Acts as a listener to a ``Signaler``.
 public class Listener {
     //MARK:- Properties
     var entity_noReturn: Entity_NoReturn?
-    var entity_string_noReturn: Entity_String_NoReturn?
+    var entity_componentClassName_noReturn: Entity_ComponentClassName_NoReturn?
     var noArg_noReturn: NoArg_NoReturn?
     var node_noReturn: Node_NoReturn?
     var node_timeInterval_noReturn: Node_TimeInterval_NoReturn?
@@ -29,8 +41,8 @@ public class Listener {
         entity_noReturn = fun
     }
 
-    public init(_ fun: @escaping Entity_String_NoReturn) {
-        entity_string_noReturn = fun
+    public init(_ fun: @escaping Entity_ComponentClassName_NoReturn) {
+        entity_componentClassName_noReturn = fun
     }
 
     public init(_ fun: @escaping Node_TimeInterval_NoReturn) {
@@ -48,27 +60,26 @@ extension Listener {
         noArg_noReturn?()
     }
 
-    public func callAsFunction(_ arg1: Node) {
-        node_noReturn?(arg1)
+    public func callAsFunction(_ node: Node) {
+        node_noReturn?(node)
     }
 
-    public func callAsFunction(_ arg1: Entity) {
-        entity_noReturn?(arg1)
+    public func callAsFunction(_ entity: Entity) {
+        entity_noReturn?(entity)
     }
 
-    public func callAsFunction(_ arg1: Entity, _ arg2: ComponentClassName) {
-        entity_string_noReturn?(arg1, arg2)
+    public func callAsFunction(_ entity: Entity, _ componentClassName: ComponentClassName) {
+        entity_componentClassName_noReturn?(entity, componentClassName)
     }
 
-    public func callAsFunction(_ arg1: Node, _ arg2: TimeInterval) {
-        node_timeInterval_noReturn?(arg1, arg2)
+    public func callAsFunction(_ node: Node, _ time: TimeInterval) {
+        node_timeInterval_noReturn?(node, time)
     }
 
-    public func callAsFunction(_ arg1: TimeInterval) {
-        timeInterval_noReturn?(arg1)
+    public func callAsFunction(_ time: TimeInterval) {
+        timeInterval_noReturn?(time)
     }
 }
-
 
 extension Listener: Hashable {
     public func hash(into hasher: inout Hasher) {

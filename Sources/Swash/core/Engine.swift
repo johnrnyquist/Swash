@@ -27,6 +27,8 @@ public class Engine {
     listen for this signal and make the change when the signal is dispatched.
     */
     public var updateComplete: Signaler1 = Signaler1()
+    
+    // Create listeners to be used on entities. 
     lazy private var componentAddedListener: Listener = { Listener(componentAdded) }()
     lazy private var componentRemovedListener: Listener = { Listener(componentRemoved) }()
     lazy private var entityNameChangedListener: Listener = { Listener(entityNameChanged) }()

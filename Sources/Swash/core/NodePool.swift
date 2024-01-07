@@ -8,15 +8,16 @@
  They are then released into the pool by calling the releaseCache method.
 */
 class NodePool {
+    private var nodeClassName: NodeClassName { "\(nodeClassType)" }
+    private var nodeClassType: Node.Type
     private var tail: Node?
-    private var nodeClassName: NodeClassName
     private var cacheTail: Node?
 
 /**
 Creates a pool for the given node class.
 */
-    init(nodeClassName: NodeClassName) {
-        self.nodeClassName = nodeClassName
+    init(nodeClassType: Node.Type) {
+        self.nodeClassType = nodeClassType
     }
 
 /**
@@ -28,7 +29,7 @@ Fetches a node from the pool.
             node.previous = nil
             return node
         } else {
-            return (classFromString(className: nodeClassName) as! Node.Type).init()
+            return nodeClassType.init()
         }
     }
 

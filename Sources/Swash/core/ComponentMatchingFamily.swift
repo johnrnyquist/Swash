@@ -5,13 +5,12 @@ matching all component class names in the components dictionary of the node subc
 The Engine in turn has a list of `ComponentMatchingFamily`s.
 */
 open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
-    public var description: String { "\(Self.self)_\(nodeClassName)" }
+    public var description: String { "\(Self.self)_" + "\(nodeClassType)" }
     private var componentClassNames: [ComponentClassName] = []
     private var engine: Engine
     private var entities: [Entity: Node] = [:]
-    private var nodeClassName: NodeClassName
     private var nodePool: NodePool
-
+    private var nodeClassType: Node.Type
     /**
      Creates a ComponentMatchingFamily to provide a NodeList for the
      given `Node` subclass.
@@ -20,10 +19,10 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
       - engine: The engine for which this family is managing its node list.
     */
     required public init(nodeClassType: Node.Type, engine: Engine) {
+        self.nodeClassType = nodeClassType
         nodeList = NodeList()
-        nodeClassName = "\(nodeClassType)"
         self.engine = engine
-        nodePool = NodePool(nodeClassName: nodeClassName)
+        nodePool = NodePool(nodeClassType: nodeClassType)
         for (componentClassName, _) in nodeClassType.init().components {
             componentClassNames.append(componentClassName) //component.value
         }
