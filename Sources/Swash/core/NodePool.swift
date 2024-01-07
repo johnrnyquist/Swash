@@ -8,7 +8,6 @@
  They are then released into the pool by calling the releaseCache method.
 */
 class NodePool {
-    private var nodeClassName: NodeClassName { "\(nodeClassType)" }
     private var nodeClassType: Node.Type
     private var tail: Node?
     private var cacheTail: Node?
