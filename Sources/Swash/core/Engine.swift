@@ -147,7 +147,7 @@ public class Engine {
         var entity = entityList.head
         while let currentEntity = entity {
             family.new(entity: currentEntity)
-            entity = currentEntity.next //end
+            entity = currentEntity.next
         }
         return family.nodeList
     }

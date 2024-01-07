@@ -13,7 +13,7 @@ open class Node {
         components[T.name] as? T
     }
 
-    static public var name: String {
+    static public var name: NodeClassName {
         "\(Self.self)"
     }
 
