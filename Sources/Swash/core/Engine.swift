@@ -26,7 +26,7 @@ public class Engine {
     engine it is usually best not to do so during the update loop. To avoid this you can
     listen for this signal and make the change when the signal is dispatched.
     */
-    public var updateComplete: Signaler0 = Signaler0()
+    public var updateComplete: Signaler1 = Signaler1()
     lazy private var componentAddedListener: Listener = { Listener(componentAdded) }()
     lazy private var componentRemovedListener: Listener = { Listener(componentRemoved) }()
     lazy private var entityNameChangedListener: Listener = { Listener(entityNameChanged) }()
@@ -247,7 +247,7 @@ public class Engine {
             system = currentSystem.next
         }
         updating = false
-        updateComplete.dispatch()
+        updateComplete.dispatch(time)
     }
 
     // MARK: - Deprecated
