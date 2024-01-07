@@ -8,7 +8,8 @@ a position component
 All entities that have a position in the game world, will have an instance of the
 position component. Systems operate on entities based on the components they have.
 */
-open class Entity {
+open class Entity: CustomStringConvertible {
+    public var description: String { _name }
     //
     static var nameCount = 0
     /// Optional, give the entity a name. This can help with debugging and with serialising the entity.
