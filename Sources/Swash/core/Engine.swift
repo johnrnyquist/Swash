@@ -103,7 +103,7 @@ public class Engine {
     }
 
     /**
-    Returns a vector containing all the entities in the engine.
+    Returns an array containing all the entities in the engine.
     */
     public var entities: [Entity] {
         var entities = [Entity]()
@@ -199,7 +199,7 @@ public class Engine {
     }
 
     /**
-    Returns a vector containing all the systems in the engine.
+    Returns an array containing all the systems in the engine.
     */
     public var systems: [System] {
         var systems = [System]()
