@@ -88,9 +88,14 @@ open class Entity: CustomStringConvertible {
     /// - Parameter componentClassName: The class of the component requested.
     /// - Returns: The component, or nil if none was found.
     public func get(componentClassName: ComponentClassName) -> Component? {
-        return components[componentClassName]
+        components[componentClassName]
     }
 
+    /// Get a component from the entity by its class name.  
+    public subscript(componentName: ComponentClassName) -> Component? {
+        self.get(componentClassName: componentName)
+    }
+    
     /// Get all components from the entity.
     /// - Returns: An array containing all the components that are on the entity.
     public func getAll() -> [Component] {
