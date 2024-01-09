@@ -81,7 +81,7 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         node.entity = entity
         // Populate the nodes’s components
         for componentClassName in componentClassNames {
-            node.components[componentClassName] = entity.get(componentClassName: componentClassName)
+            node.components[componentClassName] = entity[componentClassName]
         }
         entities[entity] = node
         nodeList.add(node: node)

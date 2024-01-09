@@ -9,21 +9,26 @@ All entities that have a position in the game world, will have an instance of th
 position component. Systems operate on entities based on the components they have.
 */
 open class Entity: CustomStringConvertible {
-    public var description: String { _name }
-    //
     static var nameCount = 0
+    /// CustomStringConvertible conformance
+    public var description: String { _name }
+    /// An array containing all the components that are on the entity.
+    public var components: [Component] {
+        Array(componentClassNameInstanceMap.values)
+    }
     /// Optional, give the entity a name. This can help with debugging and with serialising the entity.
     private var _name: String
     /// This signal is dispatched when a component is added to the entity.
     public var componentAdded: Signaler1?
     /// This signal is dispatched when a component is removed from the entity.
     public var componentRemoved: Signaler2?
+    /// A dictionary containing all the components that are on the entity mapped by class name.
+    var componentClassNameInstanceMap: [ComponentClassName: Component] = [:]
     /// Dispatched when the name of the entity changes. Used internally by the engine to track entities based on their names.
     var nameChanged: Signaler2?
-    //
+    // An entity is a node in a doubly-linked list.
     var previous: Entity?
     var next: Entity?
-    var components: [ComponentClassName: Component] = [:]
 
     /// The initializer
     /// - Parameter name: The name for the entity. If left blank, a default name is assigned with the form _entityN where N is an integer.
@@ -62,10 +67,10 @@ open class Entity: CustomStringConvertible {
     public func add<T: Component>(component: T) -> Entity {
         let componentClass = type(of: component)
         let componentClassName = "\(componentClass)"
-        if let _ = components[componentClassName] {
-            components.removeValue(forKey: componentClassName)
+        if let _ = componentClassNameInstanceMap[componentClassName] {
+            componentClassNameInstanceMap.removeValue(forKey: componentClassName)
         }
-        components[componentClassName] = component
+        componentClassNameInstanceMap[componentClassName] = component
         componentAdded?.dispatch(self)
         return self
     }
@@ -75,46 +80,53 @@ open class Entity: CustomStringConvertible {
     /// - Returns: the component’s entity or the entity itself
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
-        guard let _ = components[componentClass.name] as? T else {
+        guard let _ = componentClassNameInstanceMap[componentClass.name] as? T else {
             print("Component of class \(componentClass.name) does not exist in the entity.")
             return self
         }
-        components.removeValue(forKey: componentClass.name)
+        componentClassNameInstanceMap.removeValue(forKey: componentClass.name)
         componentRemoved?.dispatch(self, componentClass.name)
         return self
     }
 
-    /// Get a component from the entity.
+    /// Find a component in the entity.
     /// - Parameter componentClassName: The class of the component requested.
     /// - Returns: The component, or nil if none was found.
-    public func get(componentClassName: ComponentClassName) -> Component? {
-        components[componentClassName]
+    public func find(componentClassName: ComponentClassName) -> Component? {
+        componentClassNameInstanceMap[componentClassName]
+    }
+
+    /// Find a component in the entity.
+    /// - Parameter componentClass: the class of the component requested.
+    /// - Returns: The component, or nil if none was found.
+    public func find<T: Component>(componentClass: T.Type) -> T? {
+        componentClassNameInstanceMap[T.name] as? T
     }
 
     /// Get a component from the entity by its class name.  
     public subscript(componentName: ComponentClassName) -> Component? {
-        self.get(componentClassName: componentName)
+        self.find(componentClassName: componentName)
     }
-    
-    /// Get all components from the entity.
-    /// - Returns: An array containing all the components that are on the entity.
-    public func getAll() -> [Component] {
-        var componentArray: [Component] = []
-        for component in components {
-            componentArray.append(component.value)
-        }
-        return componentArray
+    public subscript<T: Component>(componentClass: T.Type) -> T? {
+        self.find(componentClass: componentClass)
     }
 
     /// Does the entity have a component of a particular type?
     /// - Parameter componentClassName: The class of the component sought.
     /// - Returns: true if the entity has a component of the type, false if not.
     public func has(componentClassName: ComponentClassName) -> Bool {
-        return components[componentClassName] != nil
+        componentClassNameInstanceMap[componentClassName] != nil
+    }
+
+    /// Does the entity have a component of a particular type?
+    /// - Parameter componentClass: The class of the component sought.
+    /// - Returns: true if the entity has a component of the type, false if not.
+    public func has<T: Component>(componentClass: T.Type) -> Bool {
+        componentClassNameInstanceMap[T.name] != nil
     }
 
     func removeAllComponents() {
-        for component in getAll() {
+        for component in components {
             remove(componentClass: type(of: component))
         }
     }
@@ -125,6 +137,22 @@ open class Entity: CustomStringConvertible {
                message: "The initializer `init(name:)` is deprecated and will be removed in version 1.1. Please use `init(named:)` instead.")
     public convenience init(name: EntityName = "") {
         self.init(named: name)
+    }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `get(componentClassName:)` is deprecated and will be removed in version 1.1. Please use `find(componentClassName:)` instead.")
+    public func get(componentClassName: ComponentClassName) -> Component? {
+        componentClassNameInstanceMap[componentClassName]
+    }
+
+    @available(iOS, deprecated, message: "Use `components` instead.")
+    public func getAll() -> [Component] {
+        var componentArray: [Component] = []
+        for component in componentClassNameInstanceMap {
+            componentArray.append(component.value)
+        }
+        return componentArray
     }
 }
 

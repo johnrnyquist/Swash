@@ -26,10 +26,10 @@ final class EngineTests: XCTestCase {
         let entity2 = Entity(named: "entity") // same name
             .add(component: component2)
         try? engine.add(entity: entity1)
-        var component = engine.getEntity(named: "entity")?.get(componentClassName: MockComponent.name) as? MockComponent
+        var component: MockComponent? = engine.getEntity(named: "entity")?[MockComponent.self]
         XCTAssertEqual(component?.value, 1)
         engine.replace(entity: entity2)
-        component = engine.getEntity(named: "entity")?.get(componentClassName: MockComponent.name) as? MockComponent
+        component = engine.getEntity(named: "entity")?[MockComponent.self]
         XCTAssertEqual(component?.value, 2)
     }
 

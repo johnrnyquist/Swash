@@ -20,7 +20,7 @@ final class EntityTests: XCTestCase {
     func test_addComponent() {
         let mockComponent = MockComponent()
         entity.add(component: mockComponent)
-        XCTAssertEqual(entity.components.count, 1)
+        XCTAssertEqual(entity.componentClassNameInstanceMap.count, 1)
     }
 
     /**********/
@@ -33,7 +33,7 @@ final class EntityTests: XCTestCase {
     func test_canStoreAndRetrieveComponent() {
         let component: MockComponent = MockComponent()
         entity.add(component: component)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component)
+        XCTAssertTrue(entity[MockComponent.self] === component)
     }
 
     func test_canStoreAndRetrieveMultipleComponents() {
@@ -41,8 +41,8 @@ final class EntityTests: XCTestCase {
         entity.add(component: component1)
         let component2: MockComponent2 = MockComponent2()
         entity.add(component: component2)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component1)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent2.self)") === component2)
+        XCTAssertTrue(entity[MockComponent.self] === component1)
+        XCTAssertTrue(entity[MockComponent2.self] === component2)
     }
 
     func test_canReplaceComponent() {
@@ -50,7 +50,7 @@ final class EntityTests: XCTestCase {
         entity.add(component: component1)
         let component2: MockComponent = MockComponent()
         entity.add(component: component2)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component2)
+        XCTAssertTrue(entity[MockComponent.self] === component2)
     }
 
     func test_canStoreBaseAndExtendedComponents() {
@@ -58,19 +58,19 @@ final class EntityTests: XCTestCase {
         entity.add(component: component1)
         let component2: MockComponentExtended = MockComponentExtended()
         entity.add(component: component2)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component1)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponentExtended.self)") === component2)
+        XCTAssertTrue(entity[MockComponent.self] === component1)
+        XCTAssertTrue(entity[MockComponentExtended.self] === component2)
     }
 
     // TODO: This may be a problem. 
     func xtest_canStoreExtendedComponentAsBaseType() {
         let component = MockComponentExtended()
         entity.add(component: component)
-        XCTAssertTrue(entity.get(componentClassName: "\(MockComponent.self)") === component)
+        XCTAssertTrue(entity[MockComponent.self] === component)
     }
 
     func test_getReturnNilIfNoComponent() {
-        XCTAssertNil(entity.get(componentClassName: "\(MockComponent.self)"))
+        XCTAssertNil(entity[MockComponent.self])
     }
 
     func test_willRetrieveAllComponents() {
@@ -78,7 +78,7 @@ final class EntityTests: XCTestCase {
         entity.add(component: component1)
         let component2: MockComponent2 = MockComponent2()
         entity.add(component: component2)
-        let all: Array = entity.getAll()
+        let all: Array = entity.components
         XCTAssertEqual(all.count, 2)
         XCTAssertTrue(all.contains(component1))
         XCTAssertTrue(all.contains(component2))
@@ -111,9 +111,9 @@ final class EntityTests: XCTestCase {
         let component2: MockComponent2 = MockComponent2()
         entity.add(component: component1)
         entity.add(component: component2)
-        XCTAssertEqual(entity.components.count, 2)
+        XCTAssertEqual(entity.componentClassNameInstanceMap.count, 2)
         entity.removeAllComponents()
-        XCTAssertEqual(entity.components.count, 0)
+        XCTAssertEqual(entity.componentClassNameInstanceMap.count, 0)
     }
 
     func test_testEntityHasNameByDefault() {
