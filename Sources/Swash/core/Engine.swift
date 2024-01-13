@@ -89,7 +89,7 @@ public class Engine {
     @param name The name of the entity
     @return The entity, or nil if no entity with that name exists on the engine
     */
-    public func getEntity(named: EntityName) -> Entity? {
+    public func findEntity(named: EntityName) -> Entity? {
         return entityNames[named]
     }
 
@@ -299,4 +299,10 @@ public class Engine {
         return systemList.get(systemClassName: systemClassName)
     }
 
+    @available(iOS,
+               deprecated,
+               message: "The function `getEntity(named:)` is deprecated and will be removed in version 1.1. Please use `findEntity(named:)` instead.")
+    public func getEntity(named: EntityName) -> Entity? {
+        return entityNames[named]
+    }
 }
