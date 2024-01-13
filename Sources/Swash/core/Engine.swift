@@ -194,8 +194,8 @@ public class Engine {
     - Returns: The instance of the system type that is in the engine, or
     nil if no systems of this type are in the engine.
     */
-    public func getSystem(systemClassName: SystemClassName) -> System? {
-        return systemList.get(systemClassName: systemClassName)
+    public func findSystem(named name: SystemClassName) -> System? {
+        return systemList.get(systemClassName: name)
     }
 
     /**
@@ -291,4 +291,12 @@ public class Engine {
     public func removeSystem(system: System) {
         remove(system: system)
     }
+
+    @available(iOS,
+               deprecated,
+               message: "The function `getSystem(systemClassName:)` is deprecated and will be removed in version 1.1. Please use `findSystem(named:)` instead.")
+    public func getSystem(systemClassName: SystemClassName) -> System? {
+        return systemList.get(systemClassName: systemClassName)
+    }
+
 }

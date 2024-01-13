@@ -177,20 +177,20 @@ final class SystemTests: XCTestCase {
         let system1: System = AnotherMockSystem(self)
         engine.add(system: system1, priority: 0)
         engine.add(system: System(), priority: 0)
-        XCTAssertTrue(engine.getSystem(systemClassName: "\(AnotherMockSystem.self)") === system1)
+        XCTAssertTrue(engine.findSystem(named: "\(AnotherMockSystem.self)") === system1)
     }
 
     func test_getSystemReturnsNilIfNoSuchSystem() {
         engine.add(system: System(), priority: 0)
-        XCTAssertNil(engine.getSystem(systemClassName: "\(AnotherMockSystem.self)"))
+        XCTAssertNil(engine.findSystem(named: "\(AnotherMockSystem.self)"))
     }
 
     func test_removeAllSystemsDoesWhatItSays() {
         engine.add(system: System(), priority: 0)
         engine.add(system: AnotherMockSystem(self), priority: 0)
         engine.removeAllSystems()
-        XCTAssertNil(engine.getSystem(systemClassName: "\(AnotherMockSystem.self)"))
-        XCTAssertNil(engine.getSystem(systemClassName: "\(System.self)"))
+        XCTAssertNil(engine.findSystem(named: "\(AnotherMockSystem.self)"))
+        XCTAssertNil(engine.findSystem(named: "\(System.self)"))
     }
 
     func test_removeAllSystemsSetsNextToNil() {

@@ -97,14 +97,14 @@ final class EngineTests: XCTestCase {
 
     func test_addSystem() {
         engine.add(system: MockSystem(), priority: 1)
-        XCTAssertNotNil(engine.getSystem(systemClassName: "MockSystem"))
+        XCTAssertNotNil(engine.findSystem(named: "MockSystem"))
     }
 
     func test_getSystem() {
         let mockSystem = MockSystem()
         let name = MockSystem.name
         engine.add(system: mockSystem, priority: 1)
-        XCTAssertNotNil(engine.getSystem(systemClassName: name))
+        XCTAssertNotNil(engine.findSystem(named: name))
     }
 
     func test_entitiesGetterReturnsAllTheEntities() {
