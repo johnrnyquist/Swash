@@ -1,7 +1,7 @@
 # Swash: An entity framework for Swift
 
 Author: John Nyquist
-Copyright (c) John Nyquist 2023
+Copyright (c) John Nyquist 2023-2024
 https://nyquist.net
 
 Portions Copyright (c) Richard Lord 2011-2012
