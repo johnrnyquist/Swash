@@ -1,7 +1,7 @@
 import struct Foundation.TimeInterval
 
 /// The 1 in the name means 1 parameter in its dispatch method.
-public class Signaler1: Signaler {
+open class Signaler1: Signaler {
     private weak var entity: Entity? = nil
 
     public override init() { 
