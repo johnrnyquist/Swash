@@ -1,5 +1,8 @@
 import struct Foundation.TimeInterval
 
+// The following typealias declarations have a specific naming convention. 
+// They are each a closure. Each is named after the parameters they take and their return type.
+// ie Entity_NoReturn takes an Entity and returns nothing.
 public typealias
     Entity_NoReturn =
     (Entity) -> Void
@@ -21,14 +24,14 @@ public typealias
 
 /// Acts as a listener to a ``Signaler``.
 public class Listener {
-    //MARK:- Properties
+    //MARK:- Each property is a closure that takes a specific set of parameters and returns nothing.
     var entity_noReturn: Entity_NoReturn?
     var entity_componentClassName_noReturn: Entity_ComponentClassName_NoReturn?
     var noArg_noReturn: NoArg_NoReturn?
     var node_noReturn: Node_NoReturn?
     var node_timeInterval_noReturn: Node_TimeInterval_NoReturn?
     var timeInterval_noReturn: TimeInterval_NoReturn?
-    //MARK: - Initializers
+    //MARK: - Initializer overloads. There is an init method for each closure type.
     public init(_ fun: @escaping NoArg_NoReturn) {
         noArg_noReturn = fun
     }
@@ -53,9 +56,8 @@ public class Listener {
         timeInterval_noReturn = fun
     }
 }
-
+//MARK:- callAsFunction overloads. There is a callAsFunction method for each closure type.
 extension Listener {
-    //MARK:- Call As Function methods
     public func callAsFunction() {
         noArg_noReturn?()
     }
