@@ -24,22 +24,4 @@ public protocol IFamily {
     The family is about to be discarded. Clean up all properties as necessary. Usually, you will want to empty the NodeList at this time.
      */
     func cleanUp()
-    
-    // MARK: - Deprecated
-    @available(iOS,
-               deprecated,
-               message: "The function `newEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `new(entity:)` instead.")
-    func newEntity(entity: Entity)
-    @available(iOS,
-               deprecated,
-               message: "The function `removeEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `remove(entity:)` instead.")
-    func removeEntity(entity: Entity)
-    @available(iOS,
-               deprecated,
-               message: "The function `componentAddedToEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `componentAddedTo(entity:)` instead.")
-    func componentAddedToEntity(entity: Entity)
-    @available(iOS,
-               deprecated,
-               message: "The function `componentRemovedFromEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `componentRemovedFrom(entity:)` instead.")
-    func componentRemovedFromEntity(entity: Entity, componentClassName: ComponentClassName)
 }
