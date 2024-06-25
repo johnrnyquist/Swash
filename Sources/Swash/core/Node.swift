@@ -28,7 +28,7 @@ open class Node {
 }
 
 extension Node: Equatable {
-	public static func == (lhs: Node, rhs: Node) -> Bool {
+	public static func ==(lhs: Node, rhs: Node) -> Bool {
 		lhs === rhs
 	}
 }
