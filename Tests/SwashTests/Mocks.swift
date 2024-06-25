@@ -20,13 +20,38 @@ class MockNode: Node {
     }
 }
 
-class AnotherMockComponent: Component {
+class AnotherMockComponent: Component {}
+
+class PositionComponent: Component {
+    var x: Int
+    var y: Int
+
+    init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+        super.init()
+    }
 }
 
-class AMockNode: Node {
+class ShipComponent: Component {}
+
+class ShipNode: Node {
     required init() {
         super.init()
-        components = [PointComponent.name: nil_component]
+        components = [
+            ShipComponent.name: nil_component,
+        ]
+    }
+}
+
+class AlienComponent: Component {}
+
+class AlienNode: Node {
+    required init() {
+        super.init()
+        components = [
+            AlienComponent.name: nil_component,
+        ]
     }
 }
 
@@ -47,21 +72,11 @@ class MockPointMatixNode: Node {
     }
 }
 
-class PosComponent: Component {
-    var pos: Int
-
-    init(pos: Int) {
-        self.pos = pos
-        super.init()
-    }
-}
-
 class MockPosNode: Node, CustomStringConvertible {
     var pos: Int = 0
-
-	var description: String {
-		return "pos \(pos)"
-	}
+    var description: String {
+        return "pos \(pos)"
+    }
 
     convenience init(_ value: Int = 0) {
         self.init()
@@ -70,7 +85,7 @@ class MockPosNode: Node, CustomStringConvertible {
 
     required init() {
         super.init()
-        components = [PosComponent.name: nil_component]
+        components = [PositionComponent.name: nil_component]
     }
 }
 

@@ -10,98 +10,104 @@ import XCTest
 
 final class ComponentMatchingFamilyTests: XCTestCase {
     private var engine: Engine!
-    private var family: ComponentMatchingFamily!
+    private var shipNodeFamily: ComponentMatchingFamily!
+    private var alienNodeFamily: ComponentMatchingFamily!
 
     override func setUpWithError() throws {
         engine = Engine()
-        family = ComponentMatchingFamily(nodeClassType: AMockNode.self, engine: engine)
-        engine.families[AMockNode.name] = family
+        // Families aren't normally created like this, this is for testing.
+        shipNodeFamily = ComponentMatchingFamily(nodeClassType: ShipNode.self, engine: engine)
+        alienNodeFamily = ComponentMatchingFamily(nodeClassType: AlienNode.self, engine: engine)
+        // Families aren't normally added like this, this is for testing.
+        engine.families[ShipNode.name] = shipNodeFamily
+        engine.families[AlienNode.name] = alienNodeFamily
     }
 
     override func tearDownWithError() throws {
-        family = nil
+        shipNodeFamily = nil
+        alienNodeFamily = nil
         engine = nil
     }
 
     func test_NodeListIsInitiallyEmpty() {
-        let nodes: NodeList = family.nodeList
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }
 
     func test_MatchingEntityIsAddedWhenAccessNodeListFirst() {
-        let nodes: NodeList = family.nodeList
+        let nodes: NodeList = shipNodeFamily.nodeList
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
+                .add(component: ShipComponent())
+        shipNodeFamily.new(entity: entity)
         XCTAssertTrue(nodes.head?.entity === entity)
     }
 
     func test_MatchingEntityIsAddedWhenAccessNodeListSecond() {
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
-        let nodes: NodeList = family.nodeList
+                .add(component: ShipComponent())
+        shipNodeFamily.new(entity: entity)
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertTrue(nodes.head?.entity === entity)
     }
 
     func test_NodeContainsEntityProperties() {
         let entity: Entity = Entity()
-        let point = PointComponent()
-        entity.add(component: point)
-        family.new(entity: entity)
-        let nodes = family.nodeList
-        let component = nodes.head?.components["\(PointComponent.self)"] ?? nil
-        XCTAssertTrue(component === point)
+        let shipComponent = ShipComponent()
+        entity.add(component: shipComponent)
+        shipNodeFamily.new(entity: entity)
+        let nodes = shipNodeFamily.nodeList
+        let component = nodes.head?.components["\(ShipComponent.self)"] ?? nil
+        XCTAssertTrue(component === shipComponent)
     }
 
     func test_MatchingEntityIsAddedWhenComponentAdded() {
-        let nodes: NodeList = family.nodeList
+        let nodes: NodeList = shipNodeFamily.nodeList
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.componentAddedTo(entity: entity)
+                .add(component: ShipComponent())
+        shipNodeFamily.componentAddedTo(entity: entity)
         XCTAssertTrue(nodes.head?.entity === entity)
     }
 
-    func test_NonMatchingEntityIsNotAdded() {
+    func test_NonMatchingEntity_IsNotAdded() {
         let entity: Entity = Entity()
-        family.new(entity: entity)
-        let nodes: NodeList = family.nodeList
+        shipNodeFamily.new(entity: entity)
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }
 
-    func test_NonMatchingEntityIsNotAddedWhenComponentAdded() {
+    func test_NonMatchingEntity_IsNotAdded_WhenComponentAdded() {
         let entity: Entity = Entity()
-        entity.add(component: MatrixComponent())
-        family.componentAddedTo(entity: entity)
-        let nodes: NodeList = family.nodeList
+                .add(component: MatrixComponent())
+        shipNodeFamily.componentAddedTo(entity: entity)
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }
 
-    func test_EntityIsRemovedWhenAccessNodeListFirst() {
+    func test_EntityIsRemoved_WhenAccessNodeListFirst() {
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
-        let nodes: NodeList = family.nodeList
-        family.remove(entity: entity)
+                .add(component: ShipComponent())
+        shipNodeFamily.new(entity: entity)
+        let nodes: NodeList = shipNodeFamily.nodeList
+        shipNodeFamily.remove(entity: entity)
         XCTAssertNil(nodes.head)
     }
 
-    func test_EntityIsRemovedWhenAccessNodeListSecond() {
+    func test_EntityIsRemoved_WhenAccessNodeListSecond() {
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
-        family.remove(entity: entity)
-        let nodes: NodeList = family.nodeList
+                .add(component: ShipComponent())
+        shipNodeFamily.new(entity: entity)
+        shipNodeFamily.remove(entity: entity)
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }
 
-    func test_EntityIsRemovedWhenComponentRemoved() {
+    func test_EntityIsRemoved_WhenComponentRemoved() {
         let entity: Entity = Entity()
-        entity.add(component: PointComponent())
-        family.new(entity: entity)
-        entity.remove(componentClass: PointComponent.self)
-        family.componentRemovedFrom(entity: entity, componentClassName: "\(PointComponent.self)")
-        let nodes: NodeList = family.nodeList
+                .add(component: ShipComponent())
+        shipNodeFamily.new(entity: entity)
+        entity.remove(componentClass: ShipComponent.self)
+        shipNodeFamily.componentRemovedFrom(entity: entity, componentClassName: "\(ShipComponent.self)")
+        let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }
 
@@ -110,19 +116,21 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         var i = 0
         while i < 5 {
             let entity: Entity = Entity()
-            entity.add(component: PointComponent())
+                    .add(component: ShipComponent())
             entities.append(entity)
-            family.new(entity: entity)
-            family.new(entity: Entity())
-
+            shipNodeFamily.new(entity: entity)
+            shipNodeFamily.new(entity: Entity()) // Not added because it is not matching
             i += 1
         }
-        let nodes: NodeList = family.nodeList
+        let nodes: NodeList = shipNodeFamily.nodeList
         var node: Node? = nodes.head
+        var j = 0
         while let currentNode = node {
-            XCTAssertTrue(entities.contains(currentNode.entity!))
+            XCTAssertNotNil(currentNode[ShipComponent.self])
             node = currentNode.next
+            j += 1
         }
+        XCTAssertEqual(i, j)
     }
 }
 

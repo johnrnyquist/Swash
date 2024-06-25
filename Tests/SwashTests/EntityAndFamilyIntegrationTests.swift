@@ -31,7 +31,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         entity.add(component: point)
         entity.add(component: matrix)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let point2 = nodes.head?.components["\(PointComponent.self)"] ?? nil
         XCTAssertTrue(point2 === point)
         let matrix2 = nodes.head?.components["\(MatrixComponent.self)"] ?? nil
@@ -43,7 +43,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         XCTAssertTrue((nodes.head as? MockPointMatixNode)?.entity === entity)
     }
 
@@ -51,14 +51,14 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         XCTAssertTrue((nodes.head as? MockPointMatixNode)?.entity === entity)
     }
 
     func test_CorrectEntityAddedToFamilyWhenComponentsAdded() {
         let entity = Entity()
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
@@ -68,13 +68,13 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
     func test_IncorrectEntityNotAddedToFamilyWhenAccessFamilyFirst() {
         let entity = Entity()
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
     }
 
     func test_IncorrectEntityNotAddedToFamilyWhenAccessFamilySecond() {
         let entity = Entity()
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
     }
@@ -83,7 +83,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         entity.remove(componentClass: PointComponent.self)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
@@ -93,7 +93,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         entity.remove(componentClass: PointComponent.self)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
@@ -103,7 +103,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         engine.remove(entity: entity)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
@@ -113,7 +113,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         engine.remove(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         XCTAssertNil(nodes.head as? MockPointMatixNode)
@@ -126,7 +126,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
             entity.add(component: PointComponent())
             entity.add(component: MatrixComponent())
             entities.append(entity)
-            try! engine.add(entity: entity)
+            engine.add(entity: entity)
         }
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         var node = nodes.head
@@ -144,7 +144,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
             entity.add(component: PointComponent())
             entity.add(component: MatrixComponent())
             entities.append(entity)
-            try! engine.add(entity: entity)
+            engine.add(entity: entity)
         }
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         var node = nodes.head
@@ -162,7 +162,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         let entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         engine.releaseNodeList(nodeClassName: "\(MockPointMatixNode.self)")
         XCTAssertNil(nodes.head)
@@ -175,7 +175,7 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
             entity.add(component: PointComponent())
             entity.add(component: MatrixComponent())
             entities.append(entity)
-            try! engine.add(entity: entity)
+            engine.add(entity: entity)
         }
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         let node = nodes.head?.next
@@ -187,11 +187,11 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         var entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         entity = Entity()
         entity.add(component: PointComponent())
         entity.add(component: MatrixComponent())
-        try! engine.add(entity: entity)
+        engine.add(entity: entity)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         engine.removeAllEntities()
         XCTAssertNil(nodes.head)
