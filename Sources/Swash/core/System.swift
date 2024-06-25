@@ -1,13 +1,17 @@
 import struct Foundation.TimeInterval
 
 open class System {
-
-	static public var name: SystemClassName {
+    static public var name: SystemClassName {
         "\(Self.self)"
     }
 
-	public init() {}
-	
+    public init() {}
+    
+    deinit {
+        previous = nil
+        next = nil
+    }
+
     /**
     Used internally to manage the list of systems within the engine. The previous system in the list.
     */
@@ -51,7 +55,7 @@ open class System {
 }
 
 extension System: Equatable {
-	public static func == (lhs: System, rhs: System) -> Bool {
-		lhs === rhs
-	}
+    public static func ==(lhs: System, rhs: System) -> Bool {
+        lhs === rhs
+    }
 }
