@@ -1,3 +1,5 @@
+/// The priority of a system. Systems with higher priority are executed before systems with lower priority.
+/// This is just a convenience, perhaps I should move it out of the framework.
 public enum SystemPriorities: Int {
     case preUpdate = 1
     case update = 2
