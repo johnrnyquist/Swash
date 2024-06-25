@@ -44,6 +44,14 @@ open class Entity: CustomStringConvertible {
         nameChanged = Signaler2()
     }
 
+    deinit {
+        componentAdded = nil
+        componentRemoved = nil
+        componentClassNameInstanceMap.removeAll()
+        previous = nil
+        next = nil
+    }
+
     /// All entities have a name. If no name is set, a default name is used. 
     /// Names are used to fetch specific entities from the engine, 
     /// and can also help to identify an entity when debugging.
@@ -129,30 +137,6 @@ open class Entity: CustomStringConvertible {
         for component in components {
             remove(componentClass: type(of: component))
         }
-    }
-
-    // MARK: - Deprecated
-    @available(iOS,
-               deprecated,
-               message: "The initializer `init(name:)` is deprecated and will be removed in version 1.1. Please use `init(named:)` instead.")
-    public convenience init(name: EntityName = "") {
-        self.init(named: name)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `get(componentClassName:)` is deprecated and will be removed in version 1.1. Please use `find(componentClassName:)` instead.")
-    public func get(componentClassName: ComponentClassName) -> Component? {
-        componentClassNameInstanceMap[componentClassName]
-    }
-
-    @available(iOS, deprecated, message: "Use `components` instead.")
-    public func getAll() -> [Component] {
-        var componentArray: [Component] = []
-        for component in componentClassNameInstanceMap {
-            componentArray.append(component.value)
-        }
-        return componentArray
     }
 }
 
