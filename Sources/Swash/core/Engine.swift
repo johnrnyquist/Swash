@@ -27,7 +27,6 @@ public class Engine {
     listen for this signal and make the change when the signal is dispatched.
     */
     public var updateComplete: Signaler1 = Signaler1()
-    
     // Create listeners to be used on entities. 
     lazy private var componentAddedListener: Listener = { Listener(componentAdded) }()
     lazy private var componentRemovedListener: Listener = { Listener(componentRemoved) }()
@@ -38,9 +37,9 @@ public class Engine {
     /// Add an entity to the engine.
     /// - Parameter entity: The entity to add.
     /// - Throws: SwashError.entityNameAlreadyInUse
-    public func add(entity: Entity) throws {
-        guard entityNames[entity.name] == nil else {
-            throw SwashError.entityNameAlreadyInUse("The entity name \(entity.name) is already in use.")
+    public func add(entity: Entity) {
+        if let existingEntity = findEntity(named: entity.name) {
+            remove(entity: existingEntity)
         }
         entityList.add(entity: entity)
         entityNames[entity.name] = entity
@@ -51,14 +50,15 @@ public class Engine {
             family.value.new(entity: entity)
         }
     }
+    
+    /// This must search all entities for the component, which may not be efficient.
+    public func findComponents<T: Component>(componentClass: T.Type) -> [T] {
+        entityNames.values.compactMap { $0.find(componentClass: componentClass) }
+    }
 
-    /// Replace an entity in the engine. If it does not exist it will add it.
-    /// - Parameter entity: The entity to replace.
-    public func replace(entity: Entity) {
-        if let existingEntity = getEntity(named: entity.name) {
-            remove(entity: existingEntity)
-        }
-        try? add(entity: entity)
+    /// This must search all entities for the component, which may not be efficient.
+    public func findEntityNamesContaining(componentClass: Component.Type) -> [Entity] {
+        entityNames.values.filter { $0.has(componentClass: componentClass) }
     }
 
     /// Remove an entity from the engine.
@@ -250,59 +250,5 @@ public class Engine {
         }
         updating = false
         updateComplete.dispatch(time)
-    }
-
-    // MARK: - Deprecated
-    @available(iOS,
-               deprecated,
-               message: "The function `removeEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `remove(entity:)` instead.")
-    public func removeEntity(entity: Entity) {
-        remove(entity: entity)
-    }
-
-    @discardableResult
-    @available(iOS,
-               deprecated,
-               message: "The function `addSystem(system:)` is deprecated and will be removed in version 1.1. Please use `add(system:)` instead.")
-    public func addSystem(system: System, priority: Int) -> Self {
-        add(system: system, priority: priority)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `replaceEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `replace(entity:)` instead.")
-    public func replaceEntity(entity: Entity) {
-        if let existingEntity = getEntity(named: entity.name) {
-            remove(entity: existingEntity)
-        }
-        try? add(entity: entity)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `addEntity(entity:)` is deprecated and will be removed in version 1.1. Please use `add(entity:)` instead.")
-    public func addEntity(entity: Entity) throws {
-        try add(entity: entity)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `removeSystem(system:)` is deprecated and will be removed in version 1.1. Please use `remove(system:)` instead.")
-    public func removeSystem(system: System) {
-        remove(system: system)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `getSystem(systemClassName:)` is deprecated and will be removed in version 1.1. Please use `findSystem(named:)` instead.")
-    public func getSystem(systemClassName: SystemClassName) -> System? {
-        return systemList.get(systemClassName: systemClassName)
-    }
-
-    @available(iOS,
-               deprecated,
-               message: "The function `getEntity(named:)` is deprecated and will be removed in version 1.1. Please use `findEntity(named:)` instead.")
-    public func getEntity(named: EntityName) -> Entity? {
-        return entityNames[named]
     }
 }
