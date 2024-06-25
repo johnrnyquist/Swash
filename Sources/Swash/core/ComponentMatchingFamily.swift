@@ -38,7 +38,6 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
         for (componentClassName, _) in nodeClassType.init().components {
             componentClassNames.append(componentClassName) //component.value
         }
-        print("Creating \(self) for \(nodeClassType)")
     }
 
     deinit {
