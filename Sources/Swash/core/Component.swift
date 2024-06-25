@@ -5,7 +5,8 @@ open class Component {
 	static public var name: ComponentClassName {
 		"\(Self.self)"
 	}
-	public init() { }
+    
+    public init() {}
 }
 
 extension Component: Equatable {
