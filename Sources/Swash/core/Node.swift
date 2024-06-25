@@ -17,8 +17,7 @@ open class Node {
         "\(Self.self)"
     }
 
-    required public init() {
-    }
+    required public init() {}
 
     /// The entity whose components are included in the node.
     weak public var entity: Entity?
