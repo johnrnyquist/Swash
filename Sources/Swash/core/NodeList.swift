@@ -19,19 +19,16 @@ public class NodeList {
     
     The signal will pass a single parameter to the listeners - the node that was added.
     */
-    public var nodeAdded: Signaler1
+    public var nodeAdded = Signaler1()
     /**
     A signal that is dispatched whenever a node is removed from the node list.
     
     The signal will pass a single parameter to the listeners - the node that was removed.
     */
-    public var nodeRemoved: Signaler1
+    public var nodeRemoved = Signaler1()
     public var numNodes = 0
-
-    public init() {
-        nodeAdded = Signaler1()
-        nodeRemoved = Signaler1()
-    }
+    
+    public init() {}
 
     func add(node: Node) {
         if head == nil {
