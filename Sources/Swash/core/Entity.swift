@@ -39,7 +39,7 @@ open class Entity: CustomStringConvertible {
             Entity.nameCount += 1
             _name = "_entity\(Entity.nameCount)"
         }
-        componentAdded = Signaler1(self)
+        componentAdded = Signaler1()
         componentRemoved = Signaler2()
         nameChanged = Signaler2()
     }
