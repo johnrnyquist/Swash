@@ -118,8 +118,7 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      Releases the nodes that were added to the node pool during this engine update, 
      so they can be reused.
      */
-    private func releaseNodePoolCache(time: TimeInterval) {
-        print(self, #function, time)
+    private func releaseNodePoolCache() {
         engine?.updateComplete.remove(listenForUpdateComplete)
         nodePool.releaseCache()
     }
