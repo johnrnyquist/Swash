@@ -55,7 +55,17 @@ public class Listener {
     public init(_ fun: @escaping TimeInterval_NoReturn) {
         timeInterval_noReturn = fun
     }
+
+    deinit {
+        entity_noReturn = nil
+        entity_componentClassName_noReturn = nil
+        noArg_noReturn = nil
+        node_noReturn = nil
+        node_timeInterval_noReturn = nil
+        timeInterval_noReturn = nil
+    }
 }
+
 //MARK:- callAsFunction overloads. There is a callAsFunction method for each closure type.
 extension Listener {
     public func callAsFunction() {
