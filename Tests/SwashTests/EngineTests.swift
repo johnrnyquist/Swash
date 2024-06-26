@@ -14,6 +14,12 @@ final class EngineTests: XCTestCase {
         engine = nil
     }
 
+    func test_listenerSignatures() {
+        XCTAssertNotNil(engine.componentAddedListener.entity_noReturn)
+        XCTAssertNotNil(engine.componentRemovedListener.entity_string_noReturn)
+        XCTAssertNotNil(engine.entityNameChangedListener.entity_string_noReturn)
+    }
+
     func test_addEntityWithSameName() {
         let entity1 = Entity(named: "entity")
         engine.add(entity: entity1)
@@ -52,8 +58,8 @@ final class EngineTests: XCTestCase {
 
     func test_getNodeList_firstTime() {
         let entity1 = Entity()
-            .add(component: MockComponent())
-            .add(component: AnotherMockComponent())
+                .add(component: MockComponent())
+                .add(component: AnotherMockComponent())
         engine.familyClass = ComponentMatchingFamily.self
         engine.add(entity: entity1)
         XCTAssertEqual(engine.getNodeList(nodeClassType: MockNode.self).empty, false)
@@ -61,14 +67,14 @@ final class EngineTests: XCTestCase {
 
     func test_getNodeList_secondTime() {
         let entity1 = Entity()
-            .add(component: MockComponent())
-            .add(component: AnotherMockComponent())
+                .add(component: MockComponent())
+                .add(component: AnotherMockComponent())
         engine.familyClass = ComponentMatchingFamily.self
         engine.add(entity: entity1)
         XCTAssertEqual(engine.getNodeList(nodeClassType: MockNode.self).numNodes, 1)
         let entity2 = Entity()
-            .add(component: MockComponent())
-            .add(component: AnotherMockComponent())
+                .add(component: MockComponent())
+                .add(component: AnotherMockComponent())
         engine.familyClass = ComponentMatchingFamily.self
         engine.add(entity: entity2)
         XCTAssertEqual(engine.getNodeList(nodeClassType: MockNode.self).numNodes, 2)
@@ -216,7 +222,6 @@ final class EngineTests: XCTestCase {
     }
 }
 
-
 fileprivate class MockNode1: Node {
 }
 
@@ -224,7 +229,6 @@ fileprivate class MockNode2: Node {
 }
 
 class MockFamily: IFamily {
-
     static public var instances = [MockFamily]()
 
     public static func reset() {
@@ -266,11 +270,11 @@ class MockFamily: IFamily {
     }
 
     //MARK: - Deprecated Methods
-    func newEntity(entity: Entity) { }
+    func newEntity(entity: Entity) {}
 
-    func removeEntity(entity: Entity) { }
+    func removeEntity(entity: Entity) {}
 
-    func componentAddedToEntity(entity: Entity) { }
+    func componentAddedToEntity(entity: Entity) {}
 
-    func componentRemovedFromEntity(entity: Entity, componentClassName: ComponentClassName) { }
+    func componentRemovedFromEntity(entity: Entity, componentClassName: ComponentClassName) {}
 }
