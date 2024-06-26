@@ -28,9 +28,9 @@ public class Engine {
     */
     public var updateComplete = Signaler0()
     // Create listeners to be used on entities. 
-    lazy private var componentAddedListener = { Listener(componentAdded) }()
-    lazy private var componentRemovedListener = { Listener(componentRemoved) }()
-    lazy private var entityNameChangedListener = { Listener(entityNameChanged) }()
+    lazy var componentAddedListener = { Listener(componentAdded) }()
+    lazy var componentRemovedListener = { Listener(componentRemoved) }()
+    lazy var entityNameChangedListener = { Listener(entityNameChanged) }()
 
     public init() {}
 
@@ -50,7 +50,7 @@ public class Engine {
             family.value.new(entity: entity)
         }
     }
-    
+
     /// This must search all entities for the component, which may not be efficient.
     public func findComponents<T: Component>(componentClass: T.Type) -> [T] {
         entityNames.values.compactMap { $0.find(componentClass: componentClass) }
@@ -75,6 +75,16 @@ public class Engine {
         }
         entityNames.removeValue(forKey: entity.name)
         entityList.remove(entity: entity)
+    }
+
+    public func removeEntities(named names: [EntityName]) {
+        for name in names {
+            if let entity = findEntity(named: name) {
+                remove(entity: entity)
+            } else {
+                print("Engine did not contain `\(name)` entity.")
+            }
+        }
     }
 
     private func entityNameChanged(entity: Entity, oldName: EntityName) {
