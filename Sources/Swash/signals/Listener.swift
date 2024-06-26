@@ -7,7 +7,7 @@ public typealias
     Entity_NoReturn =
     (Entity) -> Void
 public typealias
-    Entity_ComponentClassName_NoReturn =
+    Entity_String_NoReturn =
     (Entity, ComponentClassName) -> Void
 public typealias
     NoArg_NoReturn =
@@ -26,7 +26,7 @@ public typealias
 public class Listener {
     //MARK:- Each property is a closure that takes a specific set of parameters and returns nothing.
     var entity_noReturn: Entity_NoReturn?
-    var entity_componentClassName_noReturn: Entity_ComponentClassName_NoReturn?
+    var entity_string_noReturn: Entity_String_NoReturn?
     var noArg_noReturn: NoArg_NoReturn?
     var node_noReturn: Node_NoReturn?
     var node_timeInterval_noReturn: Node_TimeInterval_NoReturn?
@@ -44,8 +44,8 @@ public class Listener {
         entity_noReturn = fun
     }
 
-    public init(_ fun: @escaping Entity_ComponentClassName_NoReturn) {
-        entity_componentClassName_noReturn = fun
+    public init(_ fun: @escaping Entity_String_NoReturn) {
+        entity_string_noReturn = fun
     }
 
     public init(_ fun: @escaping Node_TimeInterval_NoReturn) {
@@ -58,7 +58,7 @@ public class Listener {
 
     deinit {
         entity_noReturn = nil
-        entity_componentClassName_noReturn = nil
+        entity_string_noReturn = nil
         noArg_noReturn = nil
         node_noReturn = nil
         node_timeInterval_noReturn = nil
@@ -80,8 +80,8 @@ extension Listener {
         entity_noReturn?(entity)
     }
 
-    public func callAsFunction(_ entity: Entity, _ componentClassName: ComponentClassName) {
-        entity_componentClassName_noReturn?(entity, componentClassName)
+    public func callAsFunction(_ entity: Entity, _ string: String) {
+        entity_string_noReturn?(entity, string)
     }
 
     public func callAsFunction(_ node: Node, _ time: TimeInterval) {
