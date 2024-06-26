@@ -115,6 +115,7 @@ open class Entity: CustomStringConvertible {
     public subscript(componentName: ComponentClassName) -> Component? {
         self.find(componentClassName: componentName)
     }
+    
     public subscript<T: Component>(componentClass: T.Type) -> T? {
         self.find(componentClass: componentClass)
     }
