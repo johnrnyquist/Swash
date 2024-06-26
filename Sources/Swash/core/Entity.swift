@@ -89,7 +89,7 @@ open class Entity: CustomStringConvertible {
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
         guard let _ = componentClassNameInstanceMap[componentClass.name] as? T else {
-            print("Component of class \(componentClass.name) does not exist in the entity.")
+            print("Component of class `\(componentClass.name)` does not exist in `\(name)` entity.")
             return self
         }
         componentClassNameInstanceMap.removeValue(forKey: componentClass.name)
