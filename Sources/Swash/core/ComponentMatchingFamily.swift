@@ -23,7 +23,8 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
     private var nodePool: NodePool
     private weak var engine: Engine?
     public var description: String { "\(Self.self)_" + "\(nodeClassType)" }
-
+    lazy private var listenForUpdateComplete = { Listener(releaseNodePoolCache) }()
+    
     /**
      Creates a ComponentMatchingFamily to provide a NodeList for the given `Node` subclass.
      - Parameters:
@@ -100,14 +101,14 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
 
     /**
     Removes the entity if it is in this family's NodeList.
-    */
+    */     
     func removeIfMatch(entity: Entity) {
         guard let node = entities[entity.name] else { return }
         entities.removeValue(forKey: entity.name)
         nodeList.remove(node: node)
         if let engine, engine.updating {
             nodePool.cache(node: node)
-            engine.updateComplete.add(Listener(releaseNodePoolCache))
+            engine.updateComplete.add(listenForUpdateComplete)
         } else {
             nodePool.dispose(node: node)
         }
@@ -118,7 +119,8 @@ open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
      so they can be reused.
      */
     private func releaseNodePoolCache(time: TimeInterval) {
-        engine?.updateComplete.remove(Listener(releaseNodePoolCache))
+        print(self, #function, time)
+        engine?.updateComplete.remove(listenForUpdateComplete)
         nodePool.releaseCache()
     }
 
