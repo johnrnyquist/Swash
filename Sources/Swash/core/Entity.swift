@@ -75,8 +75,8 @@ open class Entity: CustomStringConvertible {
     public func add<T: Component>(component: T) -> Entity {
         let componentClass = type(of: component)
         let componentClassName = "\(componentClass)"
-        if let _ = componentClassNameInstanceMap[componentClassName] {
-            componentClassNameInstanceMap[componentClassName] = component
+        if let curComponent = componentClassNameInstanceMap[componentClassName],
+            curComponent === component {
             return self
         } else {
             componentClassNameInstanceMap[componentClassName] = component
