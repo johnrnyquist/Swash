@@ -15,11 +15,11 @@ open class Signaler {
         listenerNodePool = ListenerNodePool()
     }
 
-    func startDispatch() {
+    public func startDispatch() {
         dispatching = true
     }
 
-    func endDispatch() {
+    public func endDispatch() {
         dispatching = false
         if toAddHead != nil {
             if head == nil {
