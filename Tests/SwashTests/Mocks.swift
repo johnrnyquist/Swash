@@ -15,8 +15,8 @@ class MockNode: Node {
 
     required init() {
         super.init()
-        components = [MockComponent.name: nil_component,
-                      AnotherMockComponent.name: nil_component]
+        components = [MockComponent.name: nil,
+                      AnotherMockComponent.name: nil]
     }
 }
 
@@ -39,7 +39,7 @@ class ShipNode: Node {
     required init() {
         super.init()
         components = [
-            ShipComponent.name: nil_component,
+            ShipComponent.name: nil,
         ]
     }
 }
@@ -50,7 +50,7 @@ class AlienNode: Node {
     required init() {
         super.init()
         components = [
-            AlienComponent.name: nil_component,
+            AlienComponent.name: nil,
         ]
     }
 }
@@ -66,8 +66,8 @@ class MockPointMatixNode: Node {
 
     required init() {
         super.init()
-        components = [PointComponent.name: nil_component,
-                      MatrixComponent.name: nil_component
+        components = [PointComponent.name: nil,
+                      MatrixComponent.name: nil
         ]
     }
 }
@@ -85,7 +85,7 @@ class MockPosNode: Node, CustomStringConvertible {
 
     required init() {
         super.init()
-        components = [PositionComponent.name: nil_component]
+        components = [PositionComponent.name: nil]
     }
 }
 

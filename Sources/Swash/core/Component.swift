@@ -1,3 +1,4 @@
+@available(*, deprecated, message: "Use `nil` directly instead.")
 public let nil_component: Component? = nil
 
 /// All components must extend this class

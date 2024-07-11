@@ -37,7 +37,7 @@ When you dispose of a node, it is added to the pool so it can be reused.
 */
     func dispose(node: Node) {
         for (componentClassName, _) in node.components {
-            node.components[componentClassName] = nil_component
+            node.components.updateValue(nil, forKey: componentClassName)
         }
         node.entity = nil
         node.next = nil
