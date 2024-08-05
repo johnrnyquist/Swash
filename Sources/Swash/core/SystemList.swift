@@ -7,44 +7,36 @@ class SystemList {
 
     func add(system: System) {
         if head == nil {
-            // If the list is empty, set the system as both head and tail
             head = system
             tail = system
             system.next = nil
             system.previous = nil
-            return
-        }
-
-        // Traverse the list from the tail to find the correct position for the system
-        var node: System? = tail
-        while let currentNode = node {
-            if currentNode.priority <= system.priority {
-                break
-            }
-            node = currentNode.previous
-        }
-
-        if node === tail {
-            // If the system has the lowest priority, it becomes the new tail
-            tail?.next = system
-            system.previous = tail
-            system.next = nil
-            tail = system
-        } else if node == nil {
-            // If the system has the highest priority, it becomes the new head
-            system.next = head
-            system.previous = nil
-            head?.previous = system
-            head = system
         } else {
-            // Insert the system in the correct position based on its priority
-            system.next = node?.next
-            system.previous = node
-            node?.next?.previous = system
-            node?.next = system
+            var node: System? = tail
+            while let currentNode = node {
+                if (currentNode.priority <= system.priority) {
+                    break
+                }
+                node = currentNode.previous
+            }
+            if node === tail {
+                tail?.next = system
+                system.previous = tail
+                system.next = nil
+                tail = system
+            } else if node == nil {
+                system.next = head
+                system.previous = nil
+                head?.previous = system
+                head = system
+            } else {
+                system.next = node?.next
+                system.previous = node
+                node?.next?.previous = system
+                node?.next = system
+            }
         }
     }
-
 
     func remove(system: System) {
         if head === system {
@@ -81,5 +73,15 @@ class SystemList {
             system = currentSystem.next
         }
         return nil
+    }
+    
+    func toArray() -> [Int] {
+        var array = [Int]()
+        var node = head
+        while let currentNode = node {
+            array.append(currentNode.priority)
+            node = currentNode.next
+        }
+        return array
     }
 }
