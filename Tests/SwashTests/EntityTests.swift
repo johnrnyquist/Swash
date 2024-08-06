@@ -127,12 +127,6 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(entity.name, name)
     }
 
-    func test_testEntityNameCanBeChanged() {
-        entity = Entity(named: "anything")
-        entity.name = "otherThing"
-        XCTAssertEqual(entity.name, "otherThing")
-    }
-
     func nameChangedSignal(signalEntity: Entity, oldName: String) {
         XCTAssertTrue(signalEntity === entity)
         XCTAssertEqual(entity.name, "otherThing")

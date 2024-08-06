@@ -1,7 +1,7 @@
 /**
 Used internally, this is an ordered list of Systems for use by the engine update loop.
 */
-class SystemList {
+class SystemList: Sequence {
     var head: System?
     var tail: System?
 
@@ -14,7 +14,7 @@ class SystemList {
         } else {
             var node: System? = tail
             while let currentNode = node {
-                if (currentNode.priority <= system.priority) {
+                if currentNode.priority <= system.priority {
                     break
                 }
                 node = currentNode.previous
@@ -64,7 +64,6 @@ class SystemList {
     }
 
     func get(systemClassName: SystemClassName) -> System? {
-        guard let head else { return nil }
         var system: System? = head
         while let currentSystem = system {
             if type(of: currentSystem).name == systemClassName {
@@ -75,13 +74,17 @@ class SystemList {
         return nil
     }
     
-    func toArray() -> [Int] {
-        var array = [Int]()
-        var node = head
-        while let currentNode = node {
-            array.append(currentNode.priority)
-            node = currentNode.next
-        }
-        return array
+    public func makeIterator() -> SystemListIterator {
+        return SystemListIterator(current: head)
+    }
+}
+
+struct SystemListIterator: IteratorProtocol {
+    var current: System?
+
+    mutating func next() -> System? {
+        let system = current
+        current = current?.next
+        return system
     }
 }

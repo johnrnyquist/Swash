@@ -24,7 +24,8 @@ final class SystemListTests: XCTestCase {
         list.add(system: system5)
 
         let expectedPriorities = [1, 2, 3, 3, 4]
-        XCTAssertEqual(list.toArray(), expectedPriorities)
+        let actual = Array(list).map(\.priority)
+        XCTAssertEqual(actual, expectedPriorities)
     }
 
     func testAddSystemToEmptyList() {
@@ -49,7 +50,8 @@ final class SystemListTests: XCTestCase {
         list.add(system: system1)
 
         let expectedPriorities = [1, 2]
-        XCTAssertEqual(list.toArray(), expectedPriorities)
+        let actual = Array(list).map(\.priority)
+        XCTAssertEqual(actual, expectedPriorities)
     }
 
     func testAddSystemWithLowestPriority() {
@@ -62,7 +64,8 @@ final class SystemListTests: XCTestCase {
         list.add(system: system2)
 
         let expectedPriorities = [1, 2]
-        XCTAssertEqual(list.toArray(), expectedPriorities)
+        let actual = Array(list).map(\.priority)
+        XCTAssertEqual(actual, expectedPriorities)
     }
 
     func testAddSystemWithMiddlePriority() {
@@ -78,7 +81,8 @@ final class SystemListTests: XCTestCase {
         list.add(system: system2)
 
         let expectedPriorities = [1, 2, 3]
-        XCTAssertEqual(list.toArray(), expectedPriorities)
+        let actual = Array(list).map(\.priority)
+        XCTAssertEqual(actual, expectedPriorities)
     }
 }
 

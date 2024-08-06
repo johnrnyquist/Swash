@@ -103,22 +103,18 @@ final class EngineTests: XCTestCase {
     }
 
     func test_findEntityNamed_ReturnsCorrectEntity() {
-        let entity1: Entity = Entity()
-        entity1.name = "otherEntity"
+        let entity1: Entity = Entity(named: "otherEntity")
         engine.add(entity: entity1)
-        let entity2: Entity = Entity()
-        entity2.name = "myEntity"
+        let entity2: Entity = Entity(named: "myEntity")
         engine.add(entity: entity2)
         XCTAssertEqual(engine.findEntity(named: "myEntity"), entity2)
         XCTAssertEqual(engine.findEntity(named: "otherEntity"), entity1)
     }
 
     func test_getEntityByNameReturnsNilIfNoEntity() {
-        let entity1: Entity = Entity()
-        entity1.name = "otherEntity"
+        let entity1: Entity = Entity(named: "otherEntity")
         engine.add(entity: entity1)
-        let entity2: Entity = Entity()
-        entity2.name = "myEntity"
+        let entity2: Entity = Entity(named: "myEntity")
         engine.add(entity: entity2)
         XCTAssertNil(engine.findEntity(named: "wrongName"))
     }
@@ -203,22 +199,6 @@ final class EngineTests: XCTestCase {
     func test_getEntityByInvalidNameReturnsNil() {
         let entity: Entity? = engine.findEntity(named: "anything")
         XCTAssertNil(entity)
-    }
-
-    func test_entityCanBeObtainedByNameAfterRenaming() {
-        let entity: Entity = Entity(named: "anything")
-        engine.add(entity: entity)
-        entity.name = "otherName"
-        let other: Entity? = engine.findEntity(named: "otherName")
-        XCTAssertTrue(other === entity)
-    }
-
-    func test_entityCannotBeObtainedByOldNameAfterRenaming() {
-        let entity: Entity? = Entity(named: "anything")
-        engine.add(entity: entity!)
-        entity?.name = "otherName"
-        let other: Entity? = engine.findEntity(named: "anything")
-        XCTAssertNil(other)
     }
 }
 

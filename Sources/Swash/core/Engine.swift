@@ -35,7 +35,7 @@ public class Engine {
     public init() {}
 
     /// Add an entity to the engine.
-    /// - Parameter entity: The entity to add.
+    /// - Parameter entity: The entity to add. Replaces entity that has same name.
     /// - Throws: SwashError.entityNameAlreadyInUse
     public func add(entity: Entity) {
         if let existingEntity = findEntity(named: entity.name) {

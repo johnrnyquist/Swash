@@ -10,22 +10,17 @@ position component. Systems operate on entities based on the components they hav
 */
 open class Entity: CustomStringConvertible {
     static var nameCount = 0
-    /// CustomStringConvertible conformance
-    public var description: String { _name }
-    /// An array containing all the components that are on the entity.
-    public var components: [Component] {
-        Array(componentClassNameInstanceMap.values)
-    }
-    /// Optional, give the entity a name. This can help with debugging and with serialising the entity.
+
     private var _name: String
     /// This signal is dispatched when a component is added to the entity.
-    public var componentAdded: Signaler1?
+    public private(set) var componentAdded: Signaler1?
     /// This signal is dispatched when a component is removed from the entity.
-    public var componentRemoved: Signaler2?
-    /// A dictionary containing all the components that are on the entity mapped by class name.
+    public private(set) var componentRemoved: Signaler2?
+    /// All the components that are on the entity.
+    public var components: [Component] { Array(componentClassNameInstanceMap.values) }
+    /// CustomStringConvertible conformance
+    public var description: String { _name }
     var componentClassNameInstanceMap: [ComponentClassName: Component] = [:]
-    /// Dispatched when the name of the entity changes. Used internally by the engine to track entities based on their names.
-    var nameChanged: Signaler2?
     // An entity is a node in a doubly-linked list.
     var previous: Entity?
     var next: Entity?
@@ -41,7 +36,6 @@ open class Entity: CustomStringConvertible {
         }
         componentAdded = Signaler1()
         componentRemoved = Signaler2()
-        nameChanged = Signaler2()
     }
 
     deinit {
@@ -52,16 +46,15 @@ open class Entity: CustomStringConvertible {
         next = nil
     }
 
-    /// All entities have a name. If no name is set, a default name is used. 
+    /// All entities have a name. One is created if one is not supplied. 
     /// Names are used to fetch specific entities from the engine, 
     /// and can also help to identify an entity when debugging.
-    public var name: String {
+    public private(set) var name: String {
         get { _name }
         set {
-            if (_name != newValue) {
-                let previous: String = _name
+            if _name != newValue {
+                let previousName = _name
                 _name = newValue
-                nameChanged?.dispatch(self, previous)
             }
         }
     }
@@ -73,12 +66,8 @@ open class Entity: CustomStringConvertible {
     /// creating and configuring entities cleaner. 
     @discardableResult
     public func add<T: Component>(component: T) -> Entity {
-        let componentClass = type(of: component)
-        let componentClassName = "\(componentClass)"
-        if let curComponent = componentClassNameInstanceMap[componentClassName],
-            curComponent === component {
-            return self
-        } else {
+        let componentClassName = "\(type(of: component))"
+        if componentClassNameInstanceMap[componentClassName] !== component {
             componentClassNameInstanceMap[componentClassName] = component
             componentAdded?.dispatch(self)
         }
@@ -90,12 +79,12 @@ open class Entity: CustomStringConvertible {
     /// - Returns: the component’s entity or the entity itself
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
-        guard let _ = componentClassNameInstanceMap[componentClass.name] as? T else {
+        let componentClassName = "\(componentClass)"
+        if componentClassNameInstanceMap.removeValue(forKey: componentClassName) != nil {
+            componentRemoved?.dispatch(self, componentClass.name)
+        } else {
             print("Component of class `\(componentClass.name)` does not exist in `\(name)` entity.")
-            return self
         }
-        componentClassNameInstanceMap.removeValue(forKey: componentClass.name)
-        componentRemoved?.dispatch(self, componentClass.name)
         return self
     }
 
@@ -115,10 +104,12 @@ open class Entity: CustomStringConvertible {
 
     /// Get a component from the entity by its class name.  
     public subscript(componentName: ComponentClassName) -> Component? {
-        self.find(componentClassName: componentName)
+        find(componentClassName: componentName)
     }
+
+    /// Get a component from the entity by its class type.
     public subscript<T: Component>(componentClass: T.Type) -> T? {
-        self.find(componentClass: componentClass)
+        find(componentClass: componentClass)
     }
 
     /// Does the entity have a component of a particular type?
