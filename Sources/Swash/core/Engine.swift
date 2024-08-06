@@ -45,7 +45,6 @@ public class Engine {
         entityNames[entity.name] = entity
         entity.componentAdded?.add(componentAddedListener)
         entity.componentRemoved?.add(componentRemovedListener)
-        entity.nameChanged?.add(entityNameChangedListener)
         for family in families {
             family.value.new(entity: entity)
         }
@@ -68,8 +67,6 @@ public class Engine {
               .remove(componentAddedListener)
         entity.componentRemoved?
               .remove(componentRemovedListener)
-        entity.nameChanged?
-              .remove(entityNameChangedListener)
         for family in families {
             family.value.remove(entity: entity)
         }

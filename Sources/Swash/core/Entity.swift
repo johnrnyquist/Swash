@@ -53,7 +53,6 @@ open class Entity: CustomStringConvertible {
         get { _name }
         set {
             if _name != newValue {
-                let previousName = _name
                 _name = newValue
             }
         }
