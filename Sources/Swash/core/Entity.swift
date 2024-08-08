@@ -134,7 +134,7 @@ open class Entity: CustomStringConvertible {
 
 extension Entity: Equatable {
     static public func ==(lhs: Entity, rhs: Entity) -> Bool {
-        lhs.name == rhs.name
+        lhs === rhs
     }
 }
 
