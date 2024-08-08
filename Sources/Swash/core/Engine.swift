@@ -220,9 +220,7 @@ public class Engine {
         system.removeFromEngine(engine: self)
     }
 
-    /**
-    Remove all systems from the engine.
-    */
+    /// Remove all systems from the engine.
     public func removeAllSystems() {
         while let system = systemList.head {
             systemList.head = system.next
@@ -231,6 +229,15 @@ public class Engine {
             system.removeFromEngine(engine: self)
         }
         systemList.tail = nil
+    }
+
+    /// Remove all systems of a particular type from the engine.
+    public func remove(systemType: System.Type) {
+        systems.forEach { system in
+            if type(of: system) == systemType {
+                remove(system: system)
+            }
+        }
     }
 
     /**
