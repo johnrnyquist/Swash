@@ -23,6 +23,21 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(entity.componentClassNameInstanceMap.count, 1)
     }
 
+    func test_addComponent_replacesExisting() {
+        let mockComponent1 = MockComponent()
+        let mockComponent2 = MockComponent()
+        XCTAssertNotEqual(mockComponent1, mockComponent2)
+
+        entity.add(component: mockComponent1)
+        XCTAssertEqual(entity.componentClassNameInstanceMap.count, 1)
+        XCTAssertEqual(entity[MockComponent.self], mockComponent1)
+
+        entity.add(component: mockComponent2)
+        XCTAssertEqual(entity.componentClassNameInstanceMap.count, 1)
+        XCTAssertEqual(entity[MockComponent.self], mockComponent2)
+        XCTAssertNotEqual(entity[MockComponent.self], mockComponent1)
+    }
+
     /**********/
     func test_addReturnsReferenceToEntity() {
         let component: MockComponent = MockComponent()
@@ -60,13 +75,6 @@ final class EntityTests: XCTestCase {
         entity.add(component: component2)
         XCTAssertTrue(entity[MockComponent.self] === component1)
         XCTAssertTrue(entity[MockComponentExtended.self] === component2)
-    }
-
-    // TODO: This may be a problem. 
-    func xtest_canStoreExtendedComponentAsBaseType() {
-        let component = MockComponentExtended()
-        entity.add(component: component)
-        XCTAssertTrue(entity[MockComponent.self] === component)
     }
 
     func test_getReturnNilIfNoComponent() {
@@ -127,9 +135,11 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(entity.name, name)
     }
 
-    func nameChangedSignal(signalEntity: Entity, oldName: String) {
-        XCTAssertTrue(signalEntity === entity)
-        XCTAssertEqual(entity.name, "otherThing")
-        XCTAssertEqual(oldName, "anything")
+    func test_add_entitiesWithSameNameNotEqual() {
+        let entity1 = Entity(named: "entity")
+        let entity2 = Entity(named: "entity") // same name
+        XCTAssertEqual(entity1.name, entity2.name)
+        XCTAssertFalse(entity1 == entity2)
+        XCTAssertFalse(entity1 === entity2)
     }
 }

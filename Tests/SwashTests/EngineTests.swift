@@ -17,15 +17,23 @@ final class EngineTests: XCTestCase {
     func test_listenerSignatures() {
         XCTAssertNotNil(engine.componentAddedListener.entity_noReturn)
         XCTAssertNotNil(engine.componentRemovedListener.entity_string_noReturn)
-        XCTAssertNotNil(engine.entityNameChangedListener.entity_string_noReturn)
     }
+    
 
-    func test_addEntityWithSameName() {
+    func test_add_EntityWithSameNameReplacesPrevious() {
         let entity1 = Entity(named: "entity")
-        engine.add(entity: entity1)
         let entity2 = Entity(named: "entity") // same name
+        XCTAssertEqual(entity1.name, entity2.name)
+        XCTAssertFalse(entity1 == entity2)
+        XCTAssertFalse(entity1 === entity2)
+        engine.add(entity: entity1)
+        XCTAssertEqual(engine.entities.count, 1)
         engine.add(entity: entity2)
         XCTAssertEqual(engine.entities.count, 1)
+        XCTAssertNotEqual(engine.findEntity(named: "entity"), entity1)
+        XCTAssertEqual(engine.findEntity(named: "entity"), entity2)
+        XCTAssertFalse(engine.findEntity(named: "entity") === entity1)
+        XCTAssertTrue(engine.findEntity(named: "entity") === entity2)
     }
 
     func test_addEntity() throws {
