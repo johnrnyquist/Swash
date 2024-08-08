@@ -1,18 +1,17 @@
 /**
-The default class for managing a NodeList. 
- 
-This class adds and removes nodes to/from a node list as the entities and the components 
-in the engine change.  
- 
-`Entity`s are added to this family’s node list if it contains components 
-matching all component class names in the Node’s `components` dictionary. 
- 
-The Engine in turn has a list of `ComponentMatchingFamily`s.
-*/
+The ComponentMatchingFamily class is responsible for managing a NodeList.
+
+This class dynamically updates the NodeList by adding or removing nodes as entities and their components change within the engine.
+
+Entities are included in this family’s NodeList if they possess components that match all the component class names specified in the node’s components dictionary.
+
+This class ensures that the NodeList is always up-to-date with the current state of entities and their components in the engine.
+
+The engine maintains a collection of ComponentMatchingFamily instances.*/
  
 import Foundation
 
-open class ComponentMatchingFamily: IFamily, CustomStringConvertible {
+open class ComponentMatchingFamily: Family, CustomStringConvertible {
     /// The NodeList managed by this family.
     /// This is a reference that always remains valid since it is retained and reused by Systems that use the list. 
     /// i.e. we never recreate the list, we always modify it in place.

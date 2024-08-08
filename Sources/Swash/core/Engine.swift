@@ -15,8 +15,8 @@ public class Engine {
     
     The class must implement the Family interface.
     */
-    public var familyClass: IFamily.Type = ComponentMatchingFamily.self
-    var families: [NodeClassName: IFamily] = [:]
+    public var familyClass: Family.Type = ComponentMatchingFamily.self
+    var families: [NodeClassName: Family] = [:]
     /**
     Indicates if the engine is currently in its update loop.
     */
@@ -142,7 +142,7 @@ public class Engine {
         if let family = families[nodeClassName] {
             return family.nodeList
         }
-        let family: IFamily = familyClass.init(nodeClassType: nodeClassType, engine: self)
+        let family: Family = familyClass.init(nodeClassType: nodeClassType, engine: self)
         families[nodeClassName] = family
         var entity = entityList.head
         while let currentEntity = entity {

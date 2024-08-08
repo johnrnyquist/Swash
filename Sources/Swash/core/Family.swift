@@ -1,4 +1,4 @@
-public protocol IFamily {
+public protocol Family {
     /**
     Returns the NodeList managed by this class. This should be a reference that remains valid always since it is retained and reused by Systems that use the list. i.e. never recreate the list, always modify it in place.
      */

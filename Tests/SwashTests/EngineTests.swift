@@ -216,7 +216,7 @@ fileprivate class MockNode1: Node {
 fileprivate class MockNode2: Node {
 }
 
-class MockFamily: IFamily {
+class MockFamily: Family {
     static public var instances = [MockFamily]()
 
     public static func reset() {

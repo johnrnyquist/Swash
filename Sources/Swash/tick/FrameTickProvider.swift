@@ -1,6 +1,11 @@
 import struct Foundation.Date
 import struct Foundation.TimeInterval
 
+/**
+* Provides a frame tick where the frame duration is the time since the previous frame. There is a maximum frame time 
+* parameter in the constructor that can be used to limit the longest period a frame can be. Use FrameTickProvider when 
+* you need the game to adapt to varying frame rates and ensure smooth animations and responsive gameplay.
+*/
 final public class FrameTickProvider: Signaler1, ITickProvider {
     private var previousTime: TimeInterval = 0
     private var maximumFrameTime: TimeInterval

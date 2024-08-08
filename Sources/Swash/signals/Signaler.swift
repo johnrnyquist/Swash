@@ -20,19 +20,27 @@ open class Signaler {
     }
 
     public func endDispatch() {
+        // Set dispatching to false to indicate that the dispatching process has ended
         dispatching = false
+
+        // Check if there are any nodes queued to be added during the dispatching process
         if toAddHead != nil {
+            // If the main listener list is empty, set head and tail to the queued nodes
             if head == nil {
                 head = toAddHead
                 tail = toAddTail
             } else {
+                // If the main listener list is not empty, append the queued nodes to the end of the list
                 tail?.next = toAddHead
                 toAddHead?.previous = tail
                 tail = toAddTail
             }
+            // Clear the queued nodes
             toAddHead = nil
             toAddTail = nil
         }
+
+        // Release any cached listener nodes in the listenerNodePool
         listenerNodePool.releaseCache()
     }
 
