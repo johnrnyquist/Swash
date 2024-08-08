@@ -30,7 +30,6 @@ public class Engine {
     // Create listeners to be used on entities. 
     lazy var componentAddedListener = { Listener(componentAdded) }()
     lazy var componentRemovedListener = { Listener(componentRemoved) }()
-    lazy var entityNameChangedListener = { Listener(entityNameChanged) }()
 
     public init() {}
 
@@ -83,13 +82,7 @@ public class Engine {
             }
         }
     }
-
-    private func entityNameChanged(entity: Entity, oldName: EntityName) {
-        guard entityNames[oldName] == entity else { return }
-        entityNames.removeValue(forKey: oldName)
-        entityNames[entity.name] = entity
-    }
-
+    
     /**
     Get an entity based n its name.
     
