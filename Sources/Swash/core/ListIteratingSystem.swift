@@ -3,11 +3,12 @@ import struct Foundation.TimeInterval
 /**
 A useful class for systems which simply iterate over a set of nodes, performing the same action on each node. This class removes the need for a lot of boilerplate code in such systems. Extend this class and pass the node type and a node update method into the constructor. The node update method will be called once per node on the update cycle with the node instance and the frame time as parameters. e.g.
  <code>
-     public class MySystem: ListIteratingSystem {
-        public init() {
-          super.init( MyNode, updateNode )
+    final class ThrustSystem: ListIteratingSystem {
+        init() {
+            super.init(nodeClass: ThrustNode.self)
+            nodeUpdateFunction = updateNode
         }
-        private function updateNode( node : MyNode, time : TimeInterval ) {
+        private func updateNode(node: Node, time: TimeInterval) {
           // process the node here
         }
       }
