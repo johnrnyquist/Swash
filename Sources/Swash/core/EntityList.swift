@@ -40,8 +40,8 @@ final class EntityList: Sequence {
         tail = nil
     }
 
-    public func makeIterator() -> EntityListIterator {
-        return EntityListIterator(current: head)
+    public func makeIterator() -> EntityListIterator { 
+        EntityListIterator(current: head)
     }
 }
 

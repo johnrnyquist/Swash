@@ -75,7 +75,7 @@ class SystemList: Sequence {
     }
     
     public func makeIterator() -> SystemListIterator {
-        return SystemListIterator(current: head)
+        SystemListIterator(current: head)
     }
 }
 

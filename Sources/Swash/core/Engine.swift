@@ -106,13 +106,7 @@ public class Engine {
     Returns an array containing all the entities in the engine.
     */
     public var entities: [Entity] {
-        var entities = [Entity]()
-        var entity = entityList.head
-        while let currentEntity = entity {
-            entities.append(currentEntity)
-            entity = currentEntity.next //end
-        }
-        return entities
+        entityList.map { $0 }
     }
 
     private func componentAdded(entity: Entity) {
@@ -144,11 +138,12 @@ public class Engine {
         }
         let family: Family = familyClass.init(nodeClassType: nodeClassType, engine: self)
         families[nodeClassName] = family
-        var entity = entityList.head
-        while let currentEntity = entity {
-            family.new(entity: currentEntity)
-            entity = currentEntity.next
+
+        let entitiesToProcess = entityList.map { $0 }
+        entitiesToProcess.forEach { entity in
+            family.new(entity: entity)
         }
+
         return family.nodeList
     }
 
@@ -202,13 +197,7 @@ public class Engine {
     Returns an array containing all the systems in the engine.
     */
     public var systems: [System] {
-        var systems = [System]()
-        var system = systemList.head
-        while let currentSystem = system {
-            systems.append(currentSystem)
-            system = currentSystem.next
-        }
-        return systems
+        systemList.map { $0 }
     }
 
     /**
@@ -233,7 +222,9 @@ public class Engine {
 
     /// Remove all systems of a particular type from the engine.
     public func remove(systemType: System.Type) {
-        systems.forEach { system in
+        var currentSystem = systemList.head
+        while let system = currentSystem {
+            currentSystem = system.next
             if type(of: system) == systemType {
                 remove(system: system)
             }
