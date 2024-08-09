@@ -65,6 +65,7 @@ open class Entity: CustomStringConvertible {
     /// creating and configuring entities cleaner. 
     @discardableResult
     public func add<T: Component>(component: T) -> Entity {
+        component.entity = self
         let componentClassName = "\(type(of: component))"
         if componentClassNameInstanceMap[componentClassName] !== component {
             componentClassNameInstanceMap[componentClassName] = component
@@ -79,7 +80,8 @@ open class Entity: CustomStringConvertible {
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
         let componentClassName = "\(componentClass)"
-        if componentClassNameInstanceMap.removeValue(forKey: componentClassName) != nil {
+        if let component = componentClassNameInstanceMap.removeValue(forKey: componentClassName) {
+            component.entity = nil
             componentRemoved?.dispatch(self, componentClass.name)
         } else {
             print("Component of class `\(componentClass.name)` does not exist in `\(name)` entity.")

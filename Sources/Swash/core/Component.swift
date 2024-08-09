@@ -6,7 +6,7 @@ open class Component {
 	static public var name: ComponentClassName {
 		"\(Self.self)"
 	}
-    
+    public weak var entity: Entity?
     public init() {}
 }
 
