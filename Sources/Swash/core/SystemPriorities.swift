@@ -1,3 +1,13 @@
+//
+// https://github.com/johnrnyquist/Swashteroids
+//
+// Download Swashteroids from the App Store:
+// https://apps.apple.com/us/app/swashteroids/id6472061502
+//
+// Made with Swash, give it a try!
+// https://github.com/johnrnyquist/Swash
+//
+
 /// The priority of a system. Systems with higher priority are executed before systems with lower priority.
 /// This is just a convenience, perhaps I should move it out of the framework.
 public enum SystemPriorities: Int {

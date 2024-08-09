@@ -1,3 +1,13 @@
+//
+// https://github.com/johnrnyquist/Swashteroids
+//
+// Download Swashteroids from the App Store:
+// https://apps.apple.com/us/app/swashteroids/id6472061502
+//
+// Made with Swash, give it a try!
+// https://github.com/johnrnyquist/Swash
+//
+
 /// Instances of this class can dispatch a "signal" to its listners.
 /// This is a base class, it should not be instantiated.
 open class Signaler {

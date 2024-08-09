@@ -1,3 +1,13 @@
+//
+// https://github.com/johnrnyquist/Swashteroids
+//
+// Download Swashteroids from the App Store:
+// https://apps.apple.com/us/app/swashteroids/id6472061502
+//
+// Made with Swash, give it a try!
+// https://github.com/johnrnyquist/Swash
+//
+
 /**
 An entity is composed from components. As such, it is essentially a collection object for components. 
 Sometimes, the entities in a game will mirror the actual characters and objects in the game, but this 

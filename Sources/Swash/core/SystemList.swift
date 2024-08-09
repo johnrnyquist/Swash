@@ -1,3 +1,13 @@
+//
+// https://github.com/johnrnyquist/Swashteroids
+//
+// Download Swashteroids from the App Store:
+// https://apps.apple.com/us/app/swashteroids/id6472061502
+//
+// Made with Swash, give it a try!
+// https://github.com/johnrnyquist/Swash
+//
+
 /**
 Used internally, this is an ordered list of Systems for use by the engine update loop.
 */
