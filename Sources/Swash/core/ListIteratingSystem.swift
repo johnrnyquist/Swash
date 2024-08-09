@@ -1,7 +1,11 @@
 import struct Foundation.TimeInterval
 
 /**
-A useful class for systems which simply iterate over a set of nodes, performing the same action on each node. This class removes the need for a lot of boilerplate code in such systems. Extend this class and pass the node type and a node update method into the constructor. The node update method will be called once per node on the update cycle with the node instance and the frame time as parameters. e.g.
+A useful class for systems which simply iterate over a set of nodes, performing the same action on each node. 
+ This class removes the need for a lot of boilerplate code in such systems. 
+ Extend this class and pass the node type and a node update method into the constructor. 
+ The node update method will be called once per node on the update cycle with the node 
+ instance and the frame time as parameters. e.g.
  <code>
     final class ThrustSystem: ListIteratingSystem {
         init() {
@@ -17,13 +21,14 @@ A useful class for systems which simply iterate over a set of nodes, performing 
 open class ListIteratingSystem: System {
     var nodeList: NodeList?
     var nodeClass: Node.Type
+    /// This is set from this class’ subclass. 
     public var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
         didSet { if let nodeUpdateFunction { nodeUpdateFunctionListener = Listener(nodeUpdateFunction) } }
     }
     public var nodeAddedFunction: Node_NoReturn? {
         didSet { if let nodeAddedFunction { nodeAddedFunctionListener = Listener(nodeAddedFunction) } }
     }
-    public var nodeRemovedFunction: NoArg_NoReturn? {
+    public var nodeRemovedFunction: Node_NoReturn? {
         didSet { if let nodeRemovedFunction { nodeRemovedFunctionListener = Listener(nodeRemovedFunction) } }
     }
     private var nodeUpdateFunctionListener: Listener!
