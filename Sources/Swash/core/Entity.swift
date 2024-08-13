@@ -76,7 +76,7 @@ open class Entity: CustomStringConvertible {
     @discardableResult
     public func add<T: Component>(component: T) -> Entity {
         component.entity = self
-        let componentClassName = "\(type(of: component))"
+        let componentClassName = String(reflecting: type(of: component))
         if componentClassNameInstanceMap[componentClassName] !== component {
             componentClassNameInstanceMap[componentClassName] = component
             componentAdded?.dispatch(self)
@@ -89,7 +89,7 @@ open class Entity: CustomStringConvertible {
     /// - Returns: the component’s entity or the entity itself
     @discardableResult
     public func remove<T: Component>(componentClass: T.Type) -> Entity {
-        let componentClassName = "\(componentClass)"
+        let componentClassName = componentClass.name
         if let component = componentClassNameInstanceMap.removeValue(forKey: componentClassName) {
             component.entity = nil
             componentRemoved?.dispatch(self, componentClass.name)

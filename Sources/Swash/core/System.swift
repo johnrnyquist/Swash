@@ -12,7 +12,7 @@ import struct Foundation.TimeInterval
 
 open class System {
     static public var name: SystemClassName {
-        "\(Self.self)"
+        String(reflecting: Self.self)
     }
 
     public init() {}

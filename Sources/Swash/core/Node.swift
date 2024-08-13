@@ -24,7 +24,7 @@ open class Node {
     }
 
     static public var name: NodeClassName {
-        "\(Self.self)"
+        String(reflecting: Self.self)
     }
 
     required public init() {}
