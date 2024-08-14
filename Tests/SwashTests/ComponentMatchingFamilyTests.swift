@@ -59,7 +59,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
         entity.add(component: shipComponent)
         shipNodeFamily.new(entity: entity)
         let nodes = shipNodeFamily.nodeList
-        let component = nodes.head?.components["\(ShipComponent.self)"] ?? nil
+        let component = nodes.head?.components[String(reflecting: ShipComponent.self)] ?? nil
         XCTAssertTrue(component === shipComponent)
     }
 
@@ -109,7 +109,7 @@ final class ComponentMatchingFamilyTests: XCTestCase {
                 .add(component: ShipComponent())
         shipNodeFamily.new(entity: entity)
         entity.remove(componentClass: ShipComponent.self)
-        shipNodeFamily.componentRemovedFrom(entity: entity, componentClassName: "\(ShipComponent.self)")
+        shipNodeFamily.componentRemovedFrom(entity: entity, componentClassName: String(reflecting: ShipComponent.self))
         let nodes: NodeList = shipNodeFamily.nodeList
         XCTAssertNil(nodes.head)
     }

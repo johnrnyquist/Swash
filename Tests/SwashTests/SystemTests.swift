@@ -180,7 +180,7 @@ final class SystemTests: XCTestCase {
         let system1: System = AnotherMockSystem(self)
         engine.add(system: system1, priority: 0)
         engine.add(system: System(), priority: 0)
-        XCTAssertTrue(engine.findSystem(named: "\(AnotherMockSystem.self)") === system1)
+        XCTAssertTrue(engine.findSystem(named: String(reflecting: AnotherMockSystem.self)) === system1)
     }
 
     func test_getSystemReturnsNilIfNoSuchSystem() {

@@ -109,7 +109,7 @@ final class EntityTests: XCTestCase {
 
     func test_hasComponentIsTrueIfComponentTypeIsPresent() {
         entity.add(component: MockComponent())
-        XCTAssertTrue(entity.has(componentClassName: "\(MockComponent.self)"))
+        XCTAssertTrue(entity.has(componentClassName: String(reflecting: MockComponent.self)))
     }
 
     func test_canRemoveComponent() {

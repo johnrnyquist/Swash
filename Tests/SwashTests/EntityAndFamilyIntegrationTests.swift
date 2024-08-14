@@ -35,9 +35,9 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         entity.add(component: matrix)
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         engine.add(entity: entity)
-        let point2 = nodes.head?.components["\(PointComponent.self)"] ?? nil
+        let point2 = nodes.head?.components[String(reflecting: PointComponent.self)] ?? nil
         XCTAssertTrue(point2 === point)
-        let matrix2 = nodes.head?.components["\(MatrixComponent.self)"] ?? nil
+        let matrix2 = nodes.head?.components[String(reflecting: MatrixComponent.self)] ?? nil
         XCTAssertTrue(matrix2 === matrix)
     }
 

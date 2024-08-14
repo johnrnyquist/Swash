@@ -100,7 +100,7 @@ final class EngineTests: XCTestCase {
 
     func test_addSystem() {
         engine.add(system: MockSystem(), priority: 1)
-        XCTAssertNotNil(engine.findSystem(named: "MockSystem"))
+        XCTAssertNotNil(engine.findSystem(named: String(reflecting: MockSystem.self)))
     }
 
     func test_findSystemNamed() {
@@ -203,7 +203,7 @@ final class EngineTests: XCTestCase {
 
     func test_releaseNodeListCallsCleanUp() {
         engine.getNodeList(nodeClassType: MockNode.self)
-        engine.releaseNodeList(nodeClassName: "\(MockNode.self)")
+        engine.releaseNodeList(nodeClassName: String(reflecting: MockNode.self))
         XCTAssertEqual(MockFamily.instances[0].cleanUpCalls, 1)
     }
 
