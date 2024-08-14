@@ -7,11 +7,10 @@
 // Made with Swash, give it a try!
 // https://github.com/johnrnyquist/Swash
 //
-
 /**
 Used internally, this is an ordered list of Systems for use by the engine update loop.
 */
-class SystemList: Sequence {
+final class SystemList: Sequence, Collection {
     var head: System?
     var tail: System?
 
@@ -83,9 +82,37 @@ class SystemList: Sequence {
         }
         return nil
     }
-    
+
+    // Sequence conformance
     public func makeIterator() -> SystemListIterator {
         SystemListIterator(current: head)
+    }
+
+    // Collection conformance
+    var startIndex: Int { 0 }
+    var endIndex: Int { count }
+    
+    var count: Int {
+        var count = 0
+        var system = head
+        while let current = system {
+            count += 1
+            system = current.next
+        }
+        return count
+    }
+
+    func index(after i: Int) -> Int { i + 1 }
+
+    subscript(position: Int) -> System {
+        var current = head
+        for _ in 0..<position {
+            current = current?.next
+        }
+        guard let system = current else {
+            fatalError("Index out of bounds")
+        }
+        return system
     }
 }
 

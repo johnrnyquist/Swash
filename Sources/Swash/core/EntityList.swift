@@ -7,12 +7,11 @@
 // Made with Swash, give it a try!
 // https://github.com/johnrnyquist/Swash
 //
-
 /**
      * An internal class for a linked list of entities. Used inside the framework for
      * managing the entities.
      */
-final class EntityList: Sequence {
+final class EntityList: Sequence, Collection {
     var head: Entity?
     var tail: Entity?
 
@@ -50,8 +49,36 @@ final class EntityList: Sequence {
         tail = nil
     }
 
-    public func makeIterator() -> EntityListIterator { 
+    // Sequence conformance
+    public func makeIterator() -> EntityListIterator {
         EntityListIterator(current: head)
+    }
+
+    // Collection conformance
+    var startIndex: Int { 0 }
+    var endIndex: Int { count }
+
+    public var count: Int {
+        var count = 0
+        var entity = head
+        while let current = entity {
+            count += 1
+            entity = current.next
+        }
+        return count
+    }
+
+    func index(after i: Int) -> Int { i + 1 }
+
+    subscript(position: Int) -> Entity {
+        var current = head
+        for _ in 0..<position {
+            current = current?.next
+        }
+        guard let entity = current else {
+            fatalError("Index out of bounds")
+        }
+        return entity
     }
 }
 
