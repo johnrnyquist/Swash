@@ -27,7 +27,9 @@ open class Node {
         String(reflecting: Self.self)
     }
 
-    required public init() {}
+    required public init(components: [ComponentClassName: Component?] = [:]) {
+        self.components = components
+    }
 
     /// The entity whose components are included in the node.
     weak public var entity: Entity?
