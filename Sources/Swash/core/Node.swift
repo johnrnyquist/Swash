@@ -17,7 +17,7 @@ to the list obtained by the system. The engine keeps the list up to date as enti
 to and removed from the engine and as the components on entities change.
 */
 open class Node {
-    public var components: [ComponentClassName: Component?] = [:]
+    public var components: [ComponentClassName: Component?] 
 
     public subscript<T: Component>(_ type: T.Type) -> T? {
         components[T.name] as? T
@@ -27,7 +27,11 @@ open class Node {
         String(reflecting: Self.self)
     }
 
-    required public init(components: [ComponentClassName: Component?] = [:]) {
+    required public init() {
+        components = [:]
+    }
+
+    public init(components: [ComponentClassName: Component?]) {
         self.components = components
     }
 
