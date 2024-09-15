@@ -31,19 +31,10 @@ A useful class for systems which simply iterate over a set of nodes, performing 
 open class ListIteratingSystem: System {
     var nodeList: NodeList?
     var nodeClass: Node.Type
-    /// This is set from this class’ subclass. 
-    public var nodeUpdateFunction: Node_TimeInterval_NoReturn? {
-        didSet { if let nodeUpdateFunction { nodeUpdateFunctionListener = Listener(nodeUpdateFunction) } }
-    }
-    public var nodeAddedFunction: Node_NoReturn? {
-        didSet { if let nodeAddedFunction { nodeAddedFunctionListener = Listener(nodeAddedFunction) } }
-    }
-    public var nodeRemovedFunction: Node_NoReturn? {
-        didSet { if let nodeRemovedFunction { nodeRemovedFunctionListener = Listener(nodeRemovedFunction) } }
-    }
-    private var nodeUpdateFunctionListener: Listener!
-    private var nodeAddedFunctionListener: Listener!
-    private var nodeRemovedFunctionListener: Listener!
+    /// These are set from this class’ subclass. 
+    public var nodeUpdateFunction: Node_TimeInterval_NoReturn?
+    public var nodeAddedFunction: Node_NoReturn?
+    public var nodeRemovedFunction: Node_NoReturn?
 
     public init(nodeClass: Node.Type) {
         self.nodeClass = nodeClass
@@ -51,7 +42,7 @@ open class ListIteratingSystem: System {
 
     open override func addToEngine(engine: Engine) {
         nodeList = engine.getNodeList(nodeClassType: nodeClass)
-        if let nodeAddedFunction  {
+        if let nodeAddedFunction {
             var node = nodeList?.head
             while let currentNode = node {
                 nodeAddedFunction(currentNode)
@@ -65,12 +56,6 @@ open class ListIteratingSystem: System {
     }
 
     open override func removeFromEngine(engine: Engine) {
-        if let _ = nodeAddedFunction {
-            nodeList?.nodeAdded.remove(nodeAddedFunctionListener)
-        }
-        if let _ = nodeRemovedFunction {
-            nodeList?.nodeRemoved.remove(nodeRemovedFunctionListener)
-        }
         nodeList = nil
     }
 
