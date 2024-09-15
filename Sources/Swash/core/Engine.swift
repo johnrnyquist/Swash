@@ -227,6 +227,7 @@ public class Engine {
             system.next = nil
             system.removeFromEngine(engine: self)
         }
+        systemList.head = nil
         systemList.tail = nil
     }
 
