@@ -20,14 +20,14 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
     /// The NodeList managed by this family.
     /// This is a reference that always remains valid since it is retained and reused by Systems that use the list. 
     /// i.e. we never recreate the list, we always modify it in place.
-    public private(set) var nodeList: NodeList
+    lazy private var listenForUpdateComplete = { Listener(releaseNodePoolCache) }()
     private var componentClassNames: [ComponentClassName] = []
     private var entities: [String: Node] = [:]
     private var nodeClassType: Node.Type
     private var nodePool: NodePool
     private weak var engine: Engine?
+    public private(set) var nodeList: NodeList
     public var description: String { "\(Self.self)_" + "\(nodeClassType)" }
-    lazy private var listenForUpdateComplete = { Listener(releaseNodePoolCache) }()
 
     /**
      Creates a ComponentMatchingFamily to provide a NodeList for the given `Node` subclass.
@@ -68,7 +68,8 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
      Called by the engine when a component has been removed from an entity. We check if the removed component is required by this family's NodeList and if so, we check if the entity is in this this NodeList and remove it if so.
      */
     open func componentRemovedFrom(entity: Entity, componentClassName: ComponentClassName) {
-        guard componentClassNames.contains(componentClassName) else { return }
+        guard componentClassNames.contains(componentClassName) 
+        else { return }
         removeIfMatch(entity: entity)
     }
 
@@ -84,8 +85,9 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
     */
     private func addIfMatch(entity: Entity) {
         // does the ComponentMatchingFamily have a reference to this entity yet?
-        guard entities[entity.name] == nil else { return }
-        guard componentClassNames.allSatisfy({ entity.has(componentClassName: $0) }) else { return }
+        guard entities[entity.name] == nil,
+              componentClassNames.allSatisfy({ entity.has(componentClassName: $0) }) 
+        else { return }
         let node = createNode(from: entity)
         entities[entity.name] = node
         nodeList.add(node: node)
@@ -107,7 +109,8 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
     Removes the entity if it is in this family's NodeList.
     */
     private func removeIfMatch(entity: Entity) {
-        guard let node = entities[entity.name] else { return }
+        guard let node = entities[entity.name] 
+        else { return }
         entities.removeValue(forKey: entity.name)
         nodeList.remove(node: node)
         if let engine, engine.updating {

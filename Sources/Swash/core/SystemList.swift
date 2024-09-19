@@ -15,6 +15,12 @@ final class SystemList: Sequence, Collection {
     var tail: System?
 
     func add(system: System) {
+        guard contains(system) == false 
+        else { 
+            print("\(System.name) not added to engine as it already exists in the system list.")
+            return
+        }
+        
         if head == nil {
             head = system
             tail = system

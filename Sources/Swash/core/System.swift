@@ -16,7 +16,7 @@ open class System {
     }
 
     public init() {}
-    
+
     deinit {
         previous = nil
         next = nil
@@ -69,3 +69,16 @@ extension System: Equatable {
         lhs === rhs
     }
 }
+
+extension System: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}
+
+extension System: CustomStringConvertible {
+    public var description: String {
+        System.name
+    }
+}
+
