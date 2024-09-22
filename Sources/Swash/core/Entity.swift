@@ -110,7 +110,7 @@ open class Entity: CustomStringConvertible {
     /// - Parameter componentClass: the class of the component requested.
     /// - Returns: The component, or nil if none was found.
     public func find<T: Component>(componentClass: T.Type) -> T? {
-        componentClassNameInstanceMap[T.name] as? T
+        componentClassNameInstanceMap[componentClass.name] as? T
     }
 
     /// Get a component from the entity by its class name.  
