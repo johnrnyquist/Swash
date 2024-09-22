@@ -134,7 +134,7 @@ open class Entity: CustomStringConvertible {
     /// - Parameter componentClass: The class of the component sought.
     /// - Returns: true if the entity has a component of the type, false if not.
     public func has<T: Component>(componentClass: T.Type) -> Bool {
-        componentClassNameInstanceMap[T.name] != nil
+        componentClassNameInstanceMap[componentClass.name] != nil
     }
 
     func removeAllComponents() {
