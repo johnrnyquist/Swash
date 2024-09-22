@@ -65,7 +65,7 @@ public class Engine {
     }
 
     /// This must search all entities for the component, which may not be efficient.
-    public func findEntityNamesContaining(componentClass: Component.Type) -> [Entity] {
+    public func findEntitiesContaining(componentClass: Component.Type) -> [Entity] {
         entityNames.values.filter { $0.has(componentClass: componentClass) }
     }
 
