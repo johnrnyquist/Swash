@@ -35,8 +35,9 @@ open class Node {
         self.components = components
     }
 
-    /// The entity whose components are included in the node.
-    weak public var entity: Entity?
+    /// The entity whose components are included in the node. It should always be populated.
+    ///  It is optional because it needs to be cleared when in the pool and if the node is re-used, entity is re-assigned.
+    weak public var entity: Entity!
     /// Used by the NodeList class. The previous node in a node list.
     public var previous: Node?
     /// Used by the NodeList class. The next node in a node list.
