@@ -19,11 +19,7 @@ open class Signaler1: Signaler {
         startDispatch()
         var listenerNode = head
         while let currentNode = listenerNode {
-            #if DEBUG
-            currentNode.listener!(object)
-            #else
             currentNode.listener?(object)
-            #endif
             if currentNode.once {
                 if let listener = currentNode.listener {
                     remove(listener)
