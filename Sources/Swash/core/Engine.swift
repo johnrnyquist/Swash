@@ -15,6 +15,7 @@ The Engine class is the central point for creating and managing your game state.
 entities and systems to the engine, and fetch families of nodes from the engine.
 */
 public class Engine {
+    public var name: String?
     private var entityNames: [EntityName: Entity] = [:] // String: Entity
     private var entityList = EntityList()
     private var systemList = SystemList()
@@ -41,7 +42,9 @@ public class Engine {
     lazy var componentAddedListener = { Listener(componentAdded) }()
     lazy var componentRemovedListener = { Listener(componentRemoved) }()
 
-    public init() {}
+    public init(name: String? = nil) {
+        self.name = name
+    }
 
     /// Add an entity to the engine.
     /// - Parameter entity: The entity to add. Replaces entity that has same name.
