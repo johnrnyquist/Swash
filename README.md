@@ -1,40 +1,218 @@
-<img src="./images/swash.png"/>
+<img src="./images/swash.png" alt="Swash logo" width="360" />
 
+# Swash
 
-# Swash: An ECS framework for Swift
+A lightweight, fast Entity Component System framework for Swift.
 
-Swash is a small, fast entity systems component framework. The name "Swash" is a portmanteau of "Swift" and "Ash". Swash is a work-in-progress.
+Swash brings the ECS model from Ash into strongly typed Swift, with a small API surface and predictable runtime behavior. It powers real projects, including Swashteroids.
 
+## Why Swash
 
-## ECS Warning... There be dragons here!
-If you've not tried to implement anything with an ECS before, you might be in for a surprise. It is a different paradigm for solving problems. In an OOP world you're think of objects, but in an ECS you'll find it at times crazy fun and other times maddening because you're forced to solve a problem in an alien manner. It may be like your first time object-oriented programming if you were mostly experienced with procedural programming.
+- Built for game loops and real-time simulation
+- Clean separation of data (Components) and behavior (Systems)
+- Automatic entity-to-node matching via Engine + Family
+- Small framework footprint, easy to reason about
+- Battle-tested in a shipping iOS game
 
+## What Is ECS (In Swash Terms)
 
-## Process Overview
-In Swash you will create entities. An `Entity` is an aggregate of components. A `Component` is like a object. Neither of these make the decisions, that's done in a `System` that acts on the components by way of nodes. Nodes hold references to components. You will define each `Node`, that describe the components from an entity that the system acts on. When you add an object to an `Engine`, the engine will see what nodes can be made from the entity based on its components.
+- Entity: a container of components
+- Component: plain data, no game logic
+- Node: a typed view over required components
+- System: logic that updates nodes each frame
+- Engine: owns entities/systems and runs updates
 
+If you are coming from OOP, ECS can feel unfamiliar at first. That is normal. Once it clicks, complex game behavior gets easier to scale and test.
 
-## Example
-- A simple [project](https://github.com/johnrnyquist/SimpleSwashIntro) as an introduction to Swash.
-- Swashteroids 2.3.0 release [project](https://github.com/johnrnyquist/SwashteroidsDemo) is a more complex example of using Swash.
-- [Swashteroids](https://apps.apple.com/us/app/swashteroids/id6472061502) is an iPhone/iPad game made with Swash. Here's a [video](https://www.youtube.com/watch?v=gP2bKw4NAHw) of the gameplay.
+## Installation (Swift Package Manager)
+
+Add Swash to your `Package.swift` dependencies:
+
+```swift
+dependencies: [
+	.package(url: "https://github.com/johnrnyquist/Swash.git", from: "1.0.0")
+]
+```
+
+Then add Swash to your target dependencies:
+
+```swift
+.target(
+	name: "YourGame",
+	dependencies: ["Swash"]
+)
+```
+
+## Quick Start
+
+### 1) Define Components
+
+```swift
+import Swash
+
+final class PositionComponent: Component {
+	var x: Double
+	var y: Double
+
+	init(x: Double = 0, y: Double = 0) {
+		self.x = x
+		self.y = y
+		super.init()
+	}
+}
+
+final class VelocityComponent: Component {
+	var dx: Double
+	var dy: Double
+
+	init(dx: Double = 0, dy: Double = 0) {
+		self.dx = dx
+		self.dy = dy
+		super.init()
+	}
+}
+```
+
+### 2) Define a Node
+
+A Node declares which components a System needs.
+
+```swift
+import Swash
+
+final class MovementNode: Node {
+	required init() {
+		super.init()
+		components = [
+			PositionComponent.name: nil,
+			VelocityComponent.name: nil,
+		]
+	}
+}
+```
+
+### 3) Define a System
+
+Use `ListIteratingSystem` when you want to iterate over matching nodes.
+
+```swift
+import Foundation
+import Swash
+
+final class MovementSystem: ListIteratingSystem {
+	init() {
+		super.init(nodeClass: MovementNode.self)
+		nodeUpdateFunction = updateNode
+	}
+
+	private func updateNode(node: Node, time: TimeInterval) {
+		guard let position = node[PositionComponent.self],
+			  let velocity = node[VelocityComponent.self]
+		else { return }
+
+		position.x += velocity.dx * time
+		position.y += velocity.dy * time
+	}
+}
+```
+
+### 4) Build and Run
+
+```swift
+import Swash
+
+let engine = Engine(name: "main")
+
+engine.add(system: MovementSystem(), priority: 10)
+
+let player = Entity(named: "player")
+	.add(component: PositionComponent(x: 0, y: 0))
+	.add(component: VelocityComponent(dx: 100, dy: 0))
+
+engine.add(entity: player)
+
+// Typically called from your frame/tick provider.
+engine.update(time: 1.0 / 60.0)
+```
+
+## Core API At A Glance
+
+### Engine
+
+- `add(entity:)`
+- `remove(entity:)`
+- `removeAllEntities()`
+- `add(system:priority:)`
+- `remove(system:)`
+- `removeAllSystems()`
+- `getNodeList(nodeClassType:)`
+- `releaseNodeList(nodeClassName:)`
+- `update(time:)`
+
+### Entity
+
+- `add(component:)`
+- `remove(componentClass:)`
+- `find(componentClass:)`
+- `has(componentClass:)`
+- `subscript(componentClass:)`
+- `subscript(componentName:)`
+
+### System lifecycle
+
+- `addToEngine(engine:)`
+- `update(time:)`
+- `removeFromEngine(engine:)`
+
+## Update Order and Priorities
+
+Systems run in ascending priority order.
+
+- Lower number = runs earlier
+- Higher number = runs later
+
+Example ordering:
+
+- InputSystem priority 0
+- MovementSystem priority 10
+- CollisionSystem priority 20
+- RenderPrepSystem priority 30
+
+## Practical Notes
+
+- Adding an `Entity` with a duplicate name replaces the existing one in `Engine`.
+- Families and `NodeList` instances are created lazily when requested.
+- `releaseNodeList` can free memory/resources when a list is no longer needed.
+- During `Engine` updates, internal node pooling helps reduce churn.
+
+## Example Projects
+
+- Intro sample: https://github.com/johnrnyquist/SimpleSwashIntro
+- Swashteroids demo: https://github.com/johnrnyquist/SwashteroidsDemo
+- Swashteroids on App Store: https://apps.apple.com/us/app/swashteroids/id6472061502
+- Gameplay video: https://www.youtube.com/watch?v=gP2bKw4NAHw
 
 ![Swashteroids](images/swashteroids_2_1.png)
 
+## Origins
 
-## History
-[Ash](https://github.com/richardlord/Ash) is an ActionScript 3 (AS3) framework that Swash was derived from. It was created by [Richard Lord](https://richardlord.net) to facilitate game development on the (now defunct) [Flash](https://www.adobe.com/products/flashplayer/end-of-life.html) platform.
+Swash is inspired by the Ash ECS framework by Richard Lord, adapted to Swift's stronger type system.
 
-AS3 is much more weakly typed than Swift, porting Ash to Swash was a technical challenge. I had at least one false start. Some aspects of the framework had to change (for example how you create a Node). I do not think any of my changes are unduly burdensome. At the very least, I think if you check out the code, you may see some interesting things done with Swift.
+- Ash: https://github.com/richardlord/Ash
+- Richard Lord: https://richardlord.net
 
+## Status
 
-## Developer
-- [John Nyquist](https://linkedin.com/in/nyquist)
+Swash is stable and in active use, with room to evolve.
 
+If you are building something with it, open an issue or discussion and share what you are making.
 
-## Thank You
-- Swash is based on the brilliant [Ash](https://github.com/richardlord/Ash) framework by [Richard Lord](https://richardlord.net).
+## Author
 
+John Nyquist  
+https://linkedin.com/in/nyquist
 
 ## License
-- This project is licensed under the MIT License - see the LICENSE.md file for details
+
+MIT  
+See `LICENSE.md`
