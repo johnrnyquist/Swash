@@ -91,7 +91,7 @@ public class Engine {
             if let entity = findEntity(named: name) {
                 remove(entity: entity)
             } else {
-                print("Engine did not contain `\(name)` entity.")
+                SwashLog.log(.info, "Engine did not contain `\(name)` entity.")
             }
         }
     }

@@ -94,7 +94,7 @@ open class Entity: CustomStringConvertible {
             component.entity = nil
             componentRemoved?.dispatch(self, componentClass.name)
         } else {
-            print("Component of class `\(componentClass.name)` does not exist in `\(name)` entity.")
+            SwashLog.log(.info, "Component of class `\(componentClass.name)` does not exist in `\(name)` entity.")
         }
         return self
     }
