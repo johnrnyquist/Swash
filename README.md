@@ -6,6 +6,8 @@ A lightweight, fast Entity Component System framework for Swift.
 
 Swash brings the ECS model from Ash into strongly typed Swift, with a small API surface and predictable runtime behavior. It powers real projects, including Swashteroids.
 
+Development on `main` is targeting version **1.3.0**.
+
 ## Why Swash
 
 - Built for game loops and real-time simulation
