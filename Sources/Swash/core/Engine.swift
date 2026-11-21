@@ -15,8 +15,19 @@ The Engine class is the central point for creating and managing your game state.
 entities and systems to the engine, and fetch families of nodes from the engine.
 */
 public class Engine {
+    // Each add has a distinct membership, including a re-add of the same object from a callback.
+    private final class Membership {
+        let entity: Entity
+        // Nil while active. A nested removal resumes at the next family in this iterator.
+        var remainingFamilies: Dictionary<NodeClassName, Family>.Values.Iterator?
+
+        init(_ entity: Entity) {
+            self.entity = entity
+        }
+    }
+
     public var name: String?
-    private var entityNames: [EntityName: Entity] = [:] // String: Entity
+    private var entityNames: [EntityName: Membership] = [:]
     private var entityList = EntityList()
     private var systemList = SystemList()
     /**
@@ -47,41 +58,44 @@ public class Engine {
     }
 
     /// Add an entity to the engine.
-    /// - Parameter entity: The entity to add. Replaces entity that has same name.
-    /// - Throws: SwashError.entityNameAlreadyInUse
+    /// - Parameter entity: The entity to add. Replaces an entity with the same name.
+    ///   If a removal callback adds an entity with that name, the callback's addition takes precedence.
     public func add(entity: Entity) {
         if let existingEntity = findEntity(named: entity.name) {
             remove(entity: existingEntity)
+            // A removal listener may already have installed a replacement for this name.
+            guard entityNames[entity.name] == nil else { return }
         }
         entityList.add(entity: entity)
-        entityNames[entity.name] = entity
+        entityNames[entity.name] = Membership(entity)
         entity.componentAdded?.add(componentAddedListener)
         entity.componentRemoved?.add(componentRemovedListener)
-        for family in families {
-            family.value.new(entity: entity)
-        }
+        notifyFamilies(for: entity) { $0.new(entity: entity) }
     }
 
     /// This must search all entities for the component, which may not be efficient.
     public func findComponents<T: Component>(componentClass: T.Type) -> [T] {
-        entityNames.values.compactMap { $0.find(componentClass: componentClass) }
+        entityNames.values.compactMap { $0.entity.find(componentClass: componentClass) }
     }
 
     /// This must search all entities for the component, which may not be efficient.
     public func findEntitiesContaining(componentClass: Component.Type) -> [Entity] {
-        entityNames.values.filter { $0.has(componentClass: componentClass) }
+        entityNames.values.compactMap { $0.entity.has(componentClass: componentClass) ? $0.entity : nil }
     }
 
     /// Remove an entity from the engine.
-    /// - Parameter entity: The entity to remove.
+    /// - Parameter entity: The registered instance to remove. Passing a previous instance with the same name has no effect.
     public func remove(entity: Entity) {
-        entity.componentAdded?
-              .remove(componentAddedListener)
-        entity.componentRemoved?
-              .remove(componentRemovedListener)
-        for family in families {
-            family.value.remove(entity: entity)
+        guard let membership = entityNames[entity.name], membership.entity === entity else { return }
+        if membership.remainingFamilies == nil {
+            entity.componentAdded?.remove(componentAddedListener)
+            entity.componentRemoved?.remove(componentRemovedListener)
+            membership.remainingFamilies = families.values.makeIterator()
         }
+        while let family = membership.remainingFamilies?.next() {
+            family.remove(entity: entity)
+        }
+        guard entityNames[entity.name] === membership else { return }
         entityNames.removeValue(forKey: entity.name)
         entityList.remove(entity: entity)
     }
@@ -103,7 +117,7 @@ public class Engine {
     @return The entity, or nil if no entity with that name exists on the engine
     */
     public func findEntity(named: EntityName) -> Entity? {
-        return entityNames[named]
+        return entityNames[named]?.entity
     }
 
     /**
@@ -123,14 +137,20 @@ public class Engine {
     }
 
     private func componentAdded(entity: Entity) {
-        for family in families {
-            family.value.componentAddedTo(entity: entity)
-        }
+        notifyFamilies(for: entity) { $0.componentAddedTo(entity: entity) }
     }
 
     private func componentRemoved(entity: Entity, componentClassName: ComponentClassName) {
-        for (_, family) in families {
-            family.componentRemovedFrom(entity: entity, componentClassName: componentClassName)
+        notifyFamilies(for: entity) {
+            $0.componentRemovedFrom(entity: entity, componentClassName: componentClassName)
+        }
+    }
+
+    private func notifyFamilies(for entity: Entity, _ notify: (Family) -> Void) {
+        guard let membership = entityNames[entity.name], membership.entity === entity else { return }
+        for family in families.values {
+            guard membership.remainingFamilies == nil else { return }
+            notify(family)
         }
     }
 
@@ -152,9 +172,9 @@ public class Engine {
         let family: Family = familyClass.init(nodeClassType: nodeClassType, engine: self)
         families[nodeClassName] = family
 
-        let entitiesToProcess = entityList.map { $0 }
-        entitiesToProcess.forEach { entity in
-            family.new(entity: entity)
+        let memberships = entityList.compactMap { entityNames[$0.name] }
+        for membership in memberships where membership.remainingFamilies == nil {
+            family.new(entity: membership.entity)
         }
 
         return family.nodeList

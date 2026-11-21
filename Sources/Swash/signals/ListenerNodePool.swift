@@ -53,9 +53,7 @@ final class ListenerNodePool {
     func releaseCache() {
         while let listenerNode = cacheTail {
             cacheTail = listenerNode.previous
-            listenerNode.next = nil
-            listenerNode.previous = tail
-            tail = listenerNode
+            dispose(listenerNode)
         }
     }
 }

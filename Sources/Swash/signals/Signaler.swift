@@ -11,13 +11,18 @@
 /// Instances of this class can dispatch a "signal" to its listners.
 /// This is a base class, it should not be instantiated.
 open class Signaler {
+    private enum AdditionTiming {
+        case immediate, afterDispatch, afterOutermostDispatch
+    }
+
     var head: ListenerNode?
     var tail: ListenerNode?
     private var listenerDictionary: [Listener: ListenerNode] = [:]
     private var listenerNodePool: ListenerNodePool
     private var toAddHead: ListenerNode?
     private var toAddTail: ListenerNode?
-    private var dispatching = false
+    private var dispatchDepth = 0
+    private var additionTiming = AdditionTiming.immediate
     private var _numListeners = 0
 
     public init() {
@@ -26,12 +31,17 @@ open class Signaler {
     }
 
     public func startDispatch() {
-        dispatching = true
+        dispatchDepth += 1
+        if additionTiming == .immediate { additionTiming = .afterDispatch }
     }
 
     public func endDispatch() {
-        // Set dispatching to false to indicate that the dispatching process has ended
-        dispatching = false
+        guard dispatchDepth > 0 else { return }
+        dispatchDepth -= 1
+        // Normally a nested dispatch publishes its additions as it returns.
+        // After a clear, keep replacements out of all dispatches already in progress.
+        guard dispatchDepth == 0 || additionTiming != .afterOutermostDispatch else { return }
+        additionTiming = .immediate
 
         // Check if there are any nodes queued to be added during the dispatching process
         if toAddHead != nil {
@@ -50,8 +60,8 @@ open class Signaler {
             toAddTail = nil
         }
 
-        // Release any cached listener nodes in the listenerNodePool
-        listenerNodePool.releaseCache()
+        // An outer dispatch may still hold a cursor into the cache.
+        if dispatchDepth == 0 { listenerNodePool.releaseCache() }
     }
 
     public var numListeners: Int {
@@ -82,7 +92,7 @@ open class Signaler {
     }
 
     public func addNode(_ node: ListenerNode) {
-        if dispatching {
+        if additionTiming != .immediate {
             if toAddHead == nil {
                 toAddHead = node
                 toAddTail = node
@@ -126,25 +136,37 @@ open class Signaler {
                 next.previous = listenerNode.previous
             }
             listenerDictionary.removeValue(forKey: listener)
-            if dispatching {
-                listenerNodePool.cache(listenerNode)
-            } else {
-                listenerNodePool.dispose(listenerNode)
-            }
+            recycle(listenerNode)
             _numListeners -= 1
         }
     }
 
-    public func removeAll() {
-        while let listenerNode = head {
-            head = head?.next
-            listenerDictionary.removeValue(forKey: listenerNode.listener!) //HACK
+    private func recycle(_ listenerNode: ListenerNode) {
+        if dispatchDepth > 0 {
+            listenerNodePool.cache(listenerNode)
+        } else {
             listenerNodePool.dispose(listenerNode)
         }
-        tail = nil
-        toAddHead = nil
-        toAddTail = nil
-        _numListeners = 0
+    }
+
+    /// Removes active and pending listeners. After a clear during dispatch, new
+    /// listeners can receive signals once the outermost dispatch has returned.
+    public func removeAll() {
+        if dispatchDepth > 0 { additionTiming = .afterOutermostDispatch }
+        // Releasing a listener can register another one from a deinitializer.
+        // Detach each batch before releasing it and drain any new registrations.
+        while head != nil || toAddHead != nil {
+            let active = head
+            let pending = toAddHead
+            head = nil
+            tail = nil
+            toAddHead = nil
+            toAddTail = nil
+            _numListeners = 0
+            listenerDictionary.removeAll()
+            active?.forEach(recycle)
+            pending?.forEach(recycle)
+        }
     }
 }
 

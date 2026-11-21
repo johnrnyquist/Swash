@@ -22,6 +22,135 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
         engine = nil
     }
 
+    func testRemovingStaleNamesakeLeavesReplacementAndOtherEntitiesInOrder() {
+        let first = Entity()
+        let old = Entity(named: "ship").add(component: ShipComponent())
+        let last = Entity()
+        let replacement = Entity(named: "ship").add(component: ShipComponent())
+        let ships = engine.getNodeList(nodeClassType: ShipNode.self)
+        for entity in [first, old, last, replacement] {
+            engine.add(entity: entity)
+        }
+        var removals = 0
+        ships.nodeRemoved.add(Listener { (_: Node) in removals += 1 })
+
+        engine.remove(entity: old)
+        engine.remove(entity: Entity(named: "ship"))
+
+        XCTAssertEqual(removals, 0)
+        XCTAssertTrue(engine.findEntity(named: "ship") === replacement)
+        XCTAssertEqual(engine.entities, [first, last, replacement])
+        XCTAssertEqual(ships.compactMap { $0.entity }, [replacement])
+        replacement.remove(componentClass: ShipComponent.self)
+        XCTAssertTrue(ships.empty)
+        replacement.add(component: ShipComponent())
+        XCTAssertTrue(ships.head?.entity === replacement)
+    }
+
+    func testRemovalCallbackCanInstallNamesakeOrReaddSameInstanceAcrossFamilies() {
+        for readdSameInstance in [false, true] {
+            let engine = Engine()
+            let old = Entity(named: "ship").add(component: ShipComponent()).add(component: AlienComponent())
+            let replacement = readdSameInstance ? old :
+                Entity(named: "ship").add(component: ShipComponent()).add(component: AlienComponent())
+            let ships = engine.getNodeList(nodeClassType: ShipNode.self)
+            let aliens = engine.getNodeList(nodeClassType: AlienNode.self)
+            let other = Entity()
+            engine.add(entity: old)
+            engine.add(entity: other)
+            var removedEntities: [Entity] = []
+            let replace = Listener { (node: Node) in
+                guard let removed = node.entity else { return XCTFail("Missing removed entity") }
+                removedEntities.append(removed)
+                guard removedEntities.count == 1 else { return }
+                XCTAssertTrue(engine.findEntity(named: "ship") === old)
+                XCTAssertEqual(engine.entities, [old, other])
+                engine.add(entity: replacement)
+                XCTAssertTrue(engine.findEntity(named: "ship") === replacement)
+            }
+            ships.nodeRemoved.add(replace)
+            aliens.nodeRemoved.add(replace)
+
+            engine.remove(entity: old)
+
+            XCTAssertEqual(removedEntities, [old, old])
+            XCTAssertTrue(engine.findEntity(named: "ship") === replacement)
+            XCTAssertEqual(engine.entities, [other, replacement])
+            XCTAssertEqual(ships.compactMap { $0.entity }, [replacement])
+            XCTAssertEqual(aliens.compactMap { $0.entity }, [replacement])
+            ships.nodeRemoved.remove(replace)
+            aliens.nodeRemoved.remove(replace)
+            replacement.remove(componentClass: ShipComponent.self)
+            XCTAssertTrue(ships.empty)
+            replacement.add(component: ShipComponent())
+            XCTAssertTrue(ships.head?.entity === replacement)
+        }
+    }
+
+    func testQueryCreatedDuringRemovalOmitsDepartingEntity() {
+        let old = Entity().add(component: ShipComponent()).add(component: AlienComponent())
+        let remaining = Entity().add(component: AlienComponent())
+        engine.add(entity: old)
+        engine.add(entity: remaining)
+        let ships = engine.getNodeList(nodeClassType: ShipNode.self)
+        var aliens: NodeList?
+        ships.nodeRemoved.add(Listener { [engine] (_: Node) in
+            aliens = engine?.getNodeList(nodeClassType: AlienNode.self)
+        })
+
+        engine.remove(entity: old)
+
+        XCTAssertEqual(aliens?.compactMap { $0.entity }, [remaining])
+    }
+
+    func testNestedAddDuringNamesakeReplacementWins() {
+        let old = Entity(named: "ship").add(component: ShipComponent())
+        let outer = Entity(named: "ship").add(component: ShipComponent())
+        let inner = Entity(named: "ship").add(component: ShipComponent())
+        let ships = engine.getNodeList(nodeClassType: ShipNode.self)
+        engine.add(entity: old)
+        ships.nodeRemoved.add(Listener { [engine] (node: Node) in
+            if node.entity === old { engine?.add(entity: inner) }
+        })
+
+        engine.add(entity: outer)
+
+        XCTAssertTrue(engine.findEntity(named: "ship") === inner)
+        XCTAssertEqual(engine.entities, [inner])
+        XCTAssertEqual(ships.compactMap { $0.entity }, [inner])
+    }
+
+    func testReplacementDuringComponentChangeStopsDeliveryForOldEntity() {
+        for addingComponent in [false, true] {
+            let engine = Engine()
+            let old = Entity(named: "ship")
+            let replacement = Entity(named: "ship")
+            if !addingComponent {
+                old.add(component: ShipComponent())
+                replacement.add(component: ShipComponent())
+            }
+            engine.add(entity: old)
+            let lists = [ShipNode.self, SecondShipNode.self].map { engine.getNodeList(nodeClassType: $0) }
+            var didReplace = false
+            let replace = Listener { (node: Node) in
+                guard node.entity === old, !didReplace else { return }
+                didReplace = true
+                engine.add(entity: replacement)
+            }
+            for list in lists {
+                (addingComponent ? list.nodeAdded : list.nodeRemoved).add(replace)
+            }
+
+            if addingComponent { old.add(component: ShipComponent()) }
+            else { old.remove(componentClass: ShipComponent.self) }
+
+            XCTAssertEqual(engine.entities, [replacement])
+            for list in lists {
+                XCTAssertEqual(list.compactMap { $0.entity }, addingComponent ? [] : [replacement])
+            }
+        }
+    }
+
     func test_FamilyIsInitiallyEmpty() {
         let nodes = engine.getNodeList(nodeClassType: MockPointMatixNode.self)
         XCTAssertNil(nodes.head)
@@ -201,5 +330,4 @@ final class EntityAndFamilyIntegrationTests: XCTestCase {
     }
 }
 
-
-
+private final class SecondShipNode: ShipNode {}

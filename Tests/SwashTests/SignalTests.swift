@@ -229,6 +229,112 @@ final class SignalTest: XCTestCase {
         signal.removeAll()
     }
 
+    func test_removeAllDuringDispatchAllowsPendingListenerToBeAddedAgain() {
+        var calls = 0
+        let pending = Listener { calls += 1 }
+        let discarded = Listener(failIfCalled)
+        signal.add(Listener {
+            self.signal.add(pending)
+            self.signal.add(discarded)
+            self.signal.removeAll()
+            self.signal.remove(discarded)
+            XCTAssertEqual(self.signal.numListeners, 0)
+            self.signal.add(pending)
+        })
+
+        signal.dispatch()
+        XCTAssertEqual(calls, 0)
+        XCTAssertEqual(signal.numListeners, 1)
+        signal.dispatch()
+        XCTAssertEqual(calls, 1)
+    }
+
+    func test_removeAllDuringDispatchDefersReplacementListeners() {
+        var calls: [String] = []
+        signal.add(Listener {
+            self.signal.removeAll()
+            self.signal.addOnce(Listener { calls.append("once") })
+            self.signal.add(Listener { calls.append("regular") })
+        })
+
+        signal.dispatch()
+        XCTAssertEqual(calls, [])
+        XCTAssertEqual(signal.numListeners, 2)
+        signal.dispatch()
+        signal.dispatch()
+        XCTAssertEqual(calls, ["once", "regular", "regular"])
+        XCTAssertEqual(signal.numListeners, 1)
+    }
+
+    func test_removeAllClearsRegistrationsMadeByListenerDeinitializers() {
+        final class Observer {
+            let onRelease: () -> Void
+            init(onRelease: @escaping () -> Void) { self.onRelease = onRelease }
+            deinit { onRelease() }
+        }
+
+        for duringDispatch in [false, true] {
+            let signal = Signaler0()
+            var calls = 0
+            let listener = Listener { calls += 1 }
+            if duringDispatch { signal.add(Listener { signal.removeAll() }) }
+            do {
+                let observer = Observer { signal.add(listener) }
+                signal.add(Listener { withExtendedLifetime(observer) {} })
+            }
+
+            if duringDispatch { signal.dispatch() } else { signal.removeAll() }
+
+            XCTAssertEqual(signal.numListeners, 0)
+            signal.add(listener)
+            signal.dispatch()
+            XCTAssertEqual(calls, 1)
+            signal.remove(listener)
+            XCTAssertEqual(signal.numListeners, 0)
+        }
+    }
+
+    func test_removeAllInNestedDispatchDefersAdditionsUntilOutermostDispatchEnds() {
+        var nested = false
+        var calls: [String] = []
+        signal.add(Listener {
+            if nested {
+                self.signal.removeAll()
+                self.signal.add(Listener { calls.append("inner addition") })
+            } else {
+                nested = true
+                self.signal.dispatch()
+                self.signal.add(Listener { calls.append("outer addition") })
+                self.signal.dispatch()
+            }
+        })
+
+        signal.dispatch()
+        XCTAssertEqual(calls, [])
+        XCTAssertEqual(signal.numListeners, 2)
+        signal.dispatch()
+        XCTAssertEqual(calls, ["inner addition", "outer addition"])
+    }
+
+    func test_nestedDispatchWithoutClearingPreservesListenerOrder() {
+        var didNest = false
+        var calls: [String] = []
+        signal.add(Listener {
+            calls.append("driver")
+            guard !didNest else { return }
+            didNest = true
+            self.signal.add(Listener { calls.append("before nested dispatch") })
+            self.signal.dispatch()
+            self.signal.add(Listener { calls.append("after nested dispatch") })
+        })
+        signal.add(Listener { calls.append("tail") })
+
+        signal.dispatch()
+
+        XCTAssertEqual(calls, ["driver", "driver", "tail", "tail",
+                               "before nested dispatch", "after nested dispatch"])
+    }
+
     func test_addOnceListenerThenDispatchShouldCallIt() {
         var result = 0
         signal.addOnce(Listener { result += 1 })
@@ -240,5 +346,18 @@ final class SignalTest: XCTestCase {
         signal.addOnce(Listener {})
         dispatchSignal()
         XCTAssertNil(signal.head)
+    }
+
+    func test_regularListenerPersistsWhenAddedAfterOneShotListenerFires() {
+        signal.addOnce(Listener {})
+        signal.dispatch()
+
+        var calls = 0
+        signal.add(Listener { calls += 1 })
+        signal.dispatch()
+        signal.dispatch()
+
+        XCTAssertEqual(calls, 2)
+        XCTAssertEqual(signal.numListeners, 1)
     }
 }
