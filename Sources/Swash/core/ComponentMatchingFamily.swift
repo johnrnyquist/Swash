@@ -22,6 +22,7 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
     /// i.e. we never recreate the list, we always modify it in place.
     lazy private var listenForUpdateComplete = { Listener(releaseNodePoolCache) }()
     private var componentClassNames: [ComponentClassName] = []
+    private var componentNamesByType: [ObjectIdentifier: ComponentClassName] = [:]
     private var entities: [String: Node] = [:]
     private var nodeClassType: Node.Type
     private var nodePool: NodePool
@@ -101,6 +102,18 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
         node.entity = entity
         componentClassNames.forEach { componentClassName in
             node.components[componentClassName] = entity[componentClassName]
+        }
+        if node.componentNamesByType.isEmpty {
+            // Entity keys are the reflected names of concrete types, so every match
+            // supplies the same type-to-key mapping. A pooled node already has it.
+            if componentNamesByType.isEmpty {
+                for name in componentClassNames {
+                    if let component = entity[name] {
+                        componentNamesByType[ObjectIdentifier(type(of: component))] = name
+                    }
+                }
+            }
+            node.componentNamesByType = componentNamesByType
         }
         return node
     }
