@@ -32,7 +32,7 @@ Add Swash to your `Package.swift` dependencies:
 
 ```swift
 dependencies: [
-	.package(url: "https://github.com/johnrnyquist/Swash.git", from: "1.0.0")
+	.package(url: "https://github.com/johnrnyquist/Swash.git", from: "1.2.2")
 ]
 ```
 
@@ -183,6 +183,7 @@ Example ordering:
 ## Practical Notes
 
 - Adding an `Entity` with a duplicate name replaces the existing one in `Engine`.
+- Adding a new instance of an existing component type updates every matching node in place. Each node keeps its position in its list, and replacement alone sends no node-added or node-removed notification.
 - Families and `NodeList` instances are created lazily when requested.
 - `releaseNodeList` can free memory/resources when a list is no longer needed.
 - During `Engine` updates, internal node pooling helps reduce churn.

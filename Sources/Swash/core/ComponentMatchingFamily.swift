@@ -56,13 +56,17 @@ open class ComponentMatchingFamily: Family, CustomStringConvertible {
         addIfMatch(entity: entity)
     }
 
-    /**
-     Called by the engine when a component has been added to an entity. We check if the entity is not in this family's NodeList and should be, and add it if appropriate.
-     - Parameters:
-     - entity: The entity with the component added.
-     */
+    /// Adds a new match or refreshes replaced component references on its existing node.
     open func componentAddedTo(entity: Entity) {
-        addIfMatch(entity: entity)
+        guard let node = entities[entity.name] else {
+            addIfMatch(entity: entity)
+            return
+        }
+        for name in componentClassNames {
+            if let current = entity[name], (node.components[name] ?? nil) !== current {
+                node.components[name] = current
+            }
+        }
     }
 
     /**
